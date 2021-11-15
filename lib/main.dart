@@ -18,8 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Cloths App',
-      home: SignUpPAge(),
-
+      home: SignInPage(),
     );
   }
 }

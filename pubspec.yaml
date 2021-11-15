@@ -33,6 +33,7 @@ dependencies:
   regexpattern: ^1.0.0
   flutter_gifimage: ^1.0.1
   postgres: ^2.2.0
+  fluttertoast: ^7.1.8
 
   html: ^0.14.0+3
 

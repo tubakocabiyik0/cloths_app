@@ -1,9 +1,10 @@
+import 'package:bitirme_projesi/viewmodel/register_viewmodel.dart';
 import 'package:bitirme_projesi/widgets/colors.dart';
 import 'package:bitirme_projesi/widgets/button.dart';
 import 'package:bitirme_projesi/widgets/textFormField.dart';
 import 'package:flutter/material.dart';
 import 'package:regexpattern/regexpattern.dart';
-import 'package:flutter_gifimage/flutter_gifimage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -15,8 +16,7 @@ class _SignInPageState extends State<SignInPage> {
   final passController = TextEditingController();
   final _mailKey = GlobalKey<FormState>();
   final _passwordKey = GlobalKey<FormState>();
-
-
+  String result;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,11 +130,17 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-  void signIn() {
-    if (_mailKey.currentState.validate() || _passwordKey.currentState.validate()) {
+  void signIn()async{
+    if (!_mailKey.currentState.validate() ||
+        !_passwordKey.currentState.validate()) {
+    }else {
+      result = await RegisterViewModel().userLogIn(mailController.text, passController.text);
+      if(result == "logged in"){
 
+      }else{
+        Fluttertoast.showToast(msg: "Password is wrong");
+      }
+    }
     }
   }
-
   void forgetPassword() {}
-}

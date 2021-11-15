@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:postgres/postgres.dart';
 
 class DbConnection {
@@ -13,6 +14,7 @@ class DbConnection {
   PostgreSQLResult loginResult;
   PostgreSQLResult userRegisteredResult;
   PostgreSQLResult userAlreadyRegistered;
+  static String userMailAddress;
 
   DbConnection() {
     connection = (connection == null || connection.isClosed == true
@@ -35,6 +37,7 @@ class DbConnection {
 
   bool newUserFuture = false;
 
+  //User Register
   Future<bool> registerUser(
       String mail, String password, String name, String location) async {
     try {
@@ -45,7 +48,7 @@ class DbConnection {
             substitutionValues: {'mail': mail},
             allowReuse: true,
             timeoutInSeconds: 30);
-
+        // user mail already register controll
         if (userAlreadyRegistered.affectedRowCount > 0) {
           newUserFuture = false;
         } else {
@@ -70,5 +73,36 @@ class DbConnection {
     } catch (e) {
       print("hata" + e.toString());
     }
+  }
+
+  String userLoginFuture = '';
+
+  Future<String> loginUser(String mail, String password) async {
+    try {
+      await connection.open();
+      await connection.transaction((connection) async {
+        // check mail registered or not
+        loginResult = await connection.query(
+          'select mail,password from users where mail =@mail',
+          substitutionValues: {'mail': mail},
+          allowReuse: true,
+          timeoutInSeconds: 30,
+        );
+        if (loginResult.affectedRowCount > 0) {
+          userMailAddress = loginResult.first.elementAt(0);
+          //controling password is true
+          if (loginResult.first.elementAt(1).toString()==password.toString()) {
+            userLoginFuture = "logged in";
+            print("true");
+          } else if (loginResult.first.elementAt(1).contains(password) == false) {
+            userLoginFuture = "wrong password";
+          }
+        }
+      });
+    } catch (e) {
+      print("error is " + e.toString());
+    }
+    print(userLoginFuture);
+    return userLoginFuture;
   }
 }
