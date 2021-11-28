@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:postgres/postgres.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DbConnection {
   String mail = '';
@@ -15,7 +16,7 @@ class DbConnection {
   PostgreSQLResult userRegisteredResult;
   PostgreSQLResult userAlreadyRegistered;
   static String userMailAddress;
-
+  bool _isUserLoggedIn;
   DbConnection() {
     connection = (connection == null || connection.isClosed == true
         ? PostgreSQLConnection(
@@ -64,6 +65,10 @@ class DbConnection {
             allowReuse: true,
             timeoutInSeconds: 30,
           );
+          //saving sharedPreferences
+          await SharedPreferences.getInstance()
+              .then((value) => value.setBool('isLoggedIn', true));
+
           newUserFuture = true;
           // ignore: unnecessary_statements
           (userRegisteredResult.affectedRowCount > 0 ? true : false);
@@ -91,18 +96,44 @@ class DbConnection {
         if (loginResult.affectedRowCount > 0) {
           userMailAddress = loginResult.first.elementAt(0);
           //controling password is true
-          if (loginResult.first.elementAt(1).toString()==password.toString()) {
+          if (loginResult.first.elementAt(1).toString() ==
+              password.toString()) {
             userLoginFuture = "logged in";
-            print("true");
-          } else if (loginResult.first.elementAt(1).contains(password) == false) {
+            await SharedPreferences.getInstance()
+                .then((value) => value.setBool('isLoggedIn', true));
+          } else if (loginResult.first.elementAt(1).contains(password) ==
+              false) {
             userLoginFuture = "wrong password";
           }
+        }else{
+          userLoginFuture="this mail address can't find";
         }
       });
     } catch (e) {
       print("error is " + e.toString());
     }
-    print(userLoginFuture);
     return userLoginFuture;
+  }
+
+  Future<bool> userLoggedIn() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      _isUserLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+      print(_isUserLoggedIn);
+      return _isUserLoggedIn;
+    } catch(e){
+      print(e);
+    }
+  }
+
+
+  Future<bool> logOut() async {
+    try {
+       SharedPreferences sharedP = await SharedPreferences.getInstance();
+      await sharedP.remove('isLoggedIn');
+      return Future.value(true);
+    } catch (e) {
+      return Future.value(false);
+    }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:bitirme_projesi/view/home_page.dart';
 import 'package:bitirme_projesi/viewmodel/register_viewmodel.dart';
 import 'package:bitirme_projesi/widgets/colors.dart';
 import 'package:bitirme_projesi/widgets/button.dart';
@@ -17,15 +18,16 @@ class _SignInPageState extends State<SignInPage> {
   final _mailKey = GlobalKey<FormState>();
   final _passwordKey = GlobalKey<FormState>();
   String result;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: lightColor,
-      body: signUpBody(),
+      body: signUpBody(context),
     );
   }
 
-  signUpBody() {
+  signUpBody(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Column(
@@ -77,7 +79,7 @@ class _SignInPageState extends State<SignInPage> {
         ),
         MyButton(
           onPressed: () {
-            signIn();
+            signIn(context);
           },
           text: "Sign in",
         ),
@@ -130,17 +132,18 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-  void signIn()async{
+  void signIn(BuildContext context) async {
     if (!_mailKey.currentState.validate() ||
         !_passwordKey.currentState.validate()) {
-    }else {
-      result = await RegisterViewModel().userLogIn(mailController.text, passController.text);
-      if(result == "logged in"){
+    } else {
+      result = await RegisterViewModel()
+          .userLogIn(mailController.text, passController.text);
+      if (result == "logged in") {
+       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
 
-      }else{
-        Fluttertoast.showToast(msg: "Password is wrong");
-      }
-    }
-    }
-  }
-  void forgetPassword() {}
+      } else {
+        Fluttertoast.showToast(msg: result);
+      }}}
+}
+
+void forgetPassword() {}

@@ -52,7 +52,7 @@ class _WeatherPageState extends State<WeatherPage> {
   Widget searchButton() {
     return MaterialButton(
         onPressed: () {
-          _search();
+
         },
         elevation: 0,
         child: Container(
@@ -70,12 +70,7 @@ class _WeatherPageState extends State<WeatherPage> {
         ));
   }
 
-  _search() async {
-    var response = await _apiService.getWeather(dropdownValue);
-    setState(() {
-      _celsius = toCelsius(response.main.temp);
-    });
-  }
+
 
   double toCelsius(double kelvin) {
     double celsius = kelvin - 273.15;
