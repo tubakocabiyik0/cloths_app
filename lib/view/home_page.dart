@@ -79,11 +79,11 @@ class _HomePageState extends State<HomePage> {
              ),
              Padding(
                padding:  EdgeInsets.only(right: MediaQuery.of(context).size.height*0.04,left:MediaQuery.of(context).size.height*0.04),
-               child: WeatherPages(),
+               child: WeatherPagesTwo(),
              ),
              Padding(
                padding:  EdgeInsets.only(right: MediaQuery.of(context).size.height*0.04,left:MediaQuery.of(context).size.height*0.04),
-               child: WeatherPages(),
+               child: WeatherPagesThree(),
              ),
            ],
         ),
@@ -98,7 +98,6 @@ class _HomePageState extends State<HomePage> {
         activeDotColor: champagnePink,
         dotWidth: 13,
         dotHeight: 13
-
       )),
     );
   }

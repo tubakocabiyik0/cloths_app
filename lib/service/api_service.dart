@@ -18,5 +18,6 @@ class ApiService {
     );
     final responseJson = jsonDecode(response.body);
     print(WeatherResponse.fromJson(responseJson).result[1].date.toString());
+    return WeatherResponse.fromJson(responseJson);
   }
 }
