@@ -1,4 +1,5 @@
 import 'package:bitirme_projesi/view/home_page.dart';
+import 'package:bitirme_projesi/view/signup_page.dart';
 import 'package:bitirme_projesi/viewmodel/register_viewmodel.dart';
 import 'package:bitirme_projesi/widgets/colors.dart';
 import 'package:bitirme_projesi/widgets/button.dart';
@@ -85,7 +86,7 @@ class _SignInPageState extends State<SignInPage> {
         ),
         TextButton(
             onPressed: () {
-              forgetPassword();
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUpPAge()));
             },
             child: Text(
               "Don't have an account? Sign-up",
@@ -140,7 +141,6 @@ class _SignInPageState extends State<SignInPage> {
           .userLogIn(mailController.text, passController.text);
       if (result == "logged in") {
        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
-
       } else {
         Fluttertoast.showToast(msg: result);
       }}}

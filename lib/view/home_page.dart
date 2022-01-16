@@ -1,16 +1,17 @@
-
-import 'package:bitirme_projesi/view/pages.dart';
+import 'package:bitirme_projesi/view/photo_add_page.dart';
+import 'package:bitirme_projesi/view/sign%C4%B1n_page.dart';
+import 'package:bitirme_projesi/view/wardrobe_page.dart';
 import 'package:bitirme_projesi/view/weatherPages.dart';
-import 'package:bitirme_projesi/view/weather_page.dart';
+import 'package:bitirme_projesi/viewmodel/register_viewmodel.dart';
 import 'package:bitirme_projesi/widgets/bottomNavigationItems.dart';
 import 'package:bitirme_projesi/widgets/colors.dart';
 import 'package:ff_navigation_bar/ff_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../icons_icons.dart';
 import '../my_icons2_icons.dart';
-
 
 class HomePage extends StatefulWidget {
   @override
@@ -18,15 +19,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int selectedIndex=0;
+  int selectedIndex = 0;
   final _controller = PageController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: lightColor,
       body: homePageBody(),
       bottomNavigationBar: FFNavigationBar(
-        theme: FFNavigationBarTheme(itemWidth: 55,
+        theme: FFNavigationBarTheme(
+          itemWidth: 55,
           showSelectedItemShadow: false,
           barBackgroundColor: lightColor,
           selectedItemBorderColor: light,
@@ -52,40 +55,63 @@ class _HomePageState extends State<HomePage> {
   }
 
   homePageBody() {
-    return selectedIndex ==0 ?  homePage() : null;
-
+    if (selectedIndex == 0) {
+      return homePage();
+    }else if(selectedIndex==1){
+      return WardrobePage();
+    } else if (selectedIndex == 2) {
+      return PhotoAddPage();
+    } else {
+      return null;
+    }
   }
 
   homePage() {
-       return Column(
-         children: [
-           weather(),
-           smoothPage(),
-         ],
-       );
+    final userViewModel = Provider.of<RegisterViewModel>(context);
+    return Column(
+      children: [
+        //weather(),
+        smoothPage(),
+        MaterialButton(
+            child: Text("çıkış"),
+            onPressed: () async {
+              bool result = await userViewModel.userLogOut();
+              if (result == true) {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => SignInPage()));
+              }
+            })
+      ],
+    );
   }
 
   weather() {
     return Padding(
-      padding:  EdgeInsets.only(top:MediaQuery.of(context).size.height*0.13),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.13),
       child: SizedBox(
         height: 200,
         child: PageView(
-           controller: _controller,
-           children: [
-             Padding(
-               padding:  EdgeInsets.only(right: MediaQuery.of(context).size.height*0.04,left:MediaQuery.of(context).size.height*0.04),
-               child: WeatherPages(),
-             ),
-             Padding(
-               padding:  EdgeInsets.only(right: MediaQuery.of(context).size.height*0.04,left:MediaQuery.of(context).size.height*0.04),
-               child: WeatherPagesTwo(),
-             ),
-             Padding(
-               padding:  EdgeInsets.only(right: MediaQuery.of(context).size.height*0.04,left:MediaQuery.of(context).size.height*0.04),
-               child: WeatherPagesThree(),
-             ),
-           ],
+          controller: _controller,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                  right: MediaQuery.of(context).size.height * 0.04,
+                  left: MediaQuery.of(context).size.height * 0.04),
+              child: WeatherPages(),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  right: MediaQuery.of(context).size.height * 0.04,
+                  left: MediaQuery.of(context).size.height * 0.04),
+              child: WeatherPagesTwo(),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  right: MediaQuery.of(context).size.height * 0.04,
+                  left: MediaQuery.of(context).size.height * 0.04),
+              child: WeatherPagesThree(),
+            ),
+          ],
         ),
       ),
     );
@@ -93,12 +119,12 @@ class _HomePageState extends State<HomePage> {
 
   smoothPage() {
     return Padding(
-      padding:  EdgeInsets.only(top:MediaQuery.of(context).size.height*0.03),
-      child: SmoothPageIndicator(controller: _controller, count: 3,effect:WormEffect(
-        activeDotColor: champagnePink,
-        dotWidth: 13,
-        dotHeight: 13
-      )),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
+      child: SmoothPageIndicator(
+          controller: _controller,
+          count: 3,
+          effect: WormEffect(
+              activeDotColor: champagnePink, dotWidth: 13, dotHeight: 13)),
     );
   }
 }

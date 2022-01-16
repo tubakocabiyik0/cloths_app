@@ -1,3 +1,4 @@
+import 'package:bitirme_projesi/models/images.dart';
 import 'package:flutter/material.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,12 +12,19 @@ class DbConnection {
 
   String location = '';
 
+  // ignore: non_constant_identifier_names
+  String image_url = '';
+  String user_mail = '';
+
   PostgreSQLConnection connection;
   PostgreSQLResult loginResult;
+  PostgreSQLResult imageDeleted;
   PostgreSQLResult userRegisteredResult;
   PostgreSQLResult userAlreadyRegistered;
+  PostgreSQLResult imageAddedResult;
   static String userMailAddress;
   bool _isUserLoggedIn;
+
   DbConnection() {
     connection = (connection == null || connection.isClosed == true
         ? PostgreSQLConnection(
@@ -49,13 +57,13 @@ class DbConnection {
             substitutionValues: {'mail': mail},
             allowReuse: true,
             timeoutInSeconds: 30);
-        // user mail already register controll
+        // user mail already register control
         if (userAlreadyRegistered.affectedRowCount > 0) {
           newUserFuture = false;
         } else {
           userRegisteredResult = await connection.query(
             'insert into users (mail,password,name,location)'
-            'values(@mail,@password,@name,@location )',
+            'values(@mail,@password,@name,@location)',
             substitutionValues: {
               'mail': mail,
               'password': password,
@@ -68,7 +76,10 @@ class DbConnection {
           //saving sharedPreferences
           await SharedPreferences.getInstance()
               .then((value) => value.setBool('isLoggedIn', true));
-
+          await SharedPreferences.getInstance()
+              .then((value) => value.setString('userMail', mail));
+          await SharedPreferences.getInstance()
+              .then((value) => value.setString('location', location));
           newUserFuture = true;
           // ignore: unnecessary_statements
           (userRegisteredResult.affectedRowCount > 0 ? true : false);
@@ -83,13 +94,15 @@ class DbConnection {
   String userLoginFuture = '';
 
   Future<String> loginUser(String mail, String password) async {
+    String location;
     try {
       await connection.open();
       await connection.transaction((connection) async {
         // check mail registered or not
         loginResult = await connection.query(
-          'select mail,password from users where mail =@mail',
-          substitutionValues: {'mail': mail},
+          'select mail,password,location from users where mail =@mail',
+          substitutionValues: {'mail': mail,
+            'location': location},
           allowReuse: true,
           timeoutInSeconds: 30,
         );
@@ -101,12 +114,16 @@ class DbConnection {
             userLoginFuture = "logged in";
             await SharedPreferences.getInstance()
                 .then((value) => value.setBool('isLoggedIn', true));
+            await SharedPreferences.getInstance()
+                .then((value) => value.setString('userMail', mail));
+            await SharedPreferences.getInstance()
+                .then((value) => value.setString('location', location));
           } else if (loginResult.first.elementAt(1).contains(password) ==
               false) {
             userLoginFuture = "wrong password";
           }
-        }else{
-          userLoginFuture="this mail address can't find";
+        } else {
+          userLoginFuture = "this mail address can't find";
         }
       });
     } catch (e) {
@@ -121,19 +138,58 @@ class DbConnection {
       _isUserLoggedIn = prefs.getBool('isLoggedIn') ?? false;
       print(_isUserLoggedIn);
       return _isUserLoggedIn;
-    } catch(e){
+    } catch (e) {
       print(e);
     }
   }
 
+  bool imageSavedFuture = false;
 
-  Future<bool> logOut() async {
+  Future<bool> saveImages(String image, String userMail) async {
     try {
-       SharedPreferences sharedP = await SharedPreferences.getInstance();
-      await sharedP.remove('isLoggedIn');
-      return Future.value(true);
+      await connection.open();
+      await connection.transaction((connection) async {
+          imageAddedResult = await connection.query(
+            'insert into images (image_url,user_mail) values(@image_url,@user_mail)',
+            substitutionValues: {'image_url': image, 'user_mail': userMail},
+            allowReuse: true,
+            timeoutInSeconds: 30,
+          );
+
+        //controlling image added as row
+        imageSavedFuture = true;
+      });
+      return imageSavedFuture;
     } catch (e) {
-      return Future.value(false);
+      print("error is " + e.toString());
+      return false;
     }
+  }
+
+  Future<bool> deleteImage(String image_url) async {
+   try{
+     await connection.open();
+     await connection.transaction((connection) async {
+       imageDeleted = await connection.query(
+         'delete from images where image_url = @image_url',
+         substitutionValues: {'image_url': image_url},
+         allowReuse: true,
+         timeoutInSeconds: 30,
+       );
+     });
+     if(imageDeleted.affectedRowCount>0) {
+       return true;
+     }else{
+       return false;
+     }
+   }catch(e){
+     print("error is " + e.toString());
+   }
+  }
+  Future<String> getLocation()async{
+    SharedPreferences sharedPreferences= await SharedPreferences.getInstance();
+    print("burası"+sharedPreferences.getString('location').toString());
+    String result =sharedPreferences.getString('location').toString();
+    return result;
   }
 }

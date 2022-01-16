@@ -38,8 +38,10 @@ dependencies:
   provider: ^4.3.3
   shared_preferences: ^0.5.12
   ff_navigation_bar: ^0.1.0
-
+  dotted_border: ^1.0.7
   html: ^0.14.0+3
+  image_picker: ^0.6.7+22
+  flutter_animated_dialog: ^1.2.0
 
 dev_dependencies:
   flutter_test:
@@ -62,6 +64,7 @@ flutter:
   assets:
 
     - asset/images/cloud.png
+    - asset/images/add.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

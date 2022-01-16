@@ -6,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:regexpattern/regexpattern.dart';
 
+import 'home_page.dart';
+
 class SignUpPAge extends StatefulWidget {
   @override
   _SignUpPAgeState createState() => _SignUpPAgeState();
@@ -177,9 +179,10 @@ class _SignUpPAgeState extends State<SignUpPAge> {
               _nameController.text, dropdownValue)
           .then((value) {
         if (value == false) {
-          print("basariszi");
+
         } else if (value == true) {
           print("basarili");
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
         }
       });
     }
