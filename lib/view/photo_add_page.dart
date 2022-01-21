@@ -40,7 +40,7 @@ class _PhotoAddPageState extends State<PhotoAddPage> {
   Widget galleryButton() {
     return Padding(
         padding: EdgeInsets.only(
-            top: MediaQuery.of(context).size.height * 0.16,
+          top: MediaQuery.of(context).size.height * 0.16,
         ),
         child: DottedBorder(
           borderType: BorderType.RRect,
@@ -77,21 +77,21 @@ class _PhotoAddPageState extends State<PhotoAddPage> {
         builder: (BuildContext context) {
           return SimpleDialog(
             backgroundColor: lightColor,
-            title: const Text("Select One"),
+            title: const Text("Birini Seçin"),
             children: [
               SimpleDialogOption(
                 onPressed: () {
                   goGallery();
                   Navigator.pop(context);
                 },
-                child: Text("Gallery"),
+                child: Text("Galeri"),
               ),
               SimpleDialogOption(
                 onPressed: () {
                   goCamera();
                   Navigator.pop(context);
                 },
-                child: Text("Camera"),
+                child: Text("Kamera"),
               )
             ],
           );
@@ -118,8 +118,7 @@ class _PhotoAddPageState extends State<PhotoAddPage> {
                 context,
                 MaterialPageRoute(
                     builder: (BuildContext context) => HomePage()));
-                     saveImagesToDatabase();
-
+            saveImagesToDatabase();
           },
           text: "Kaydet"),
     );
@@ -154,9 +153,10 @@ class _PhotoAddPageState extends State<PhotoAddPage> {
       return value.getString('userMail');
     });
     bool saved = await ImagesViewModel()
-        .imageSave(currentImage.path.toString(), userMail);
-    print("dogrumu" + saved.toString());
-    return saved != true ? Fluttertoast.showToast(msg: "Resim kaydedilmedi") : Fluttertoast.showToast(msg: "Resim kaydedildi");
+        .imageSave(currentImage.path.toString(), userMail,selectedCategory,selectedSeason,selectedColor);
+    return saved != true
+        ? Fluttertoast.showToast(msg: "Resim kaydedilmedi")
+        : Fluttertoast.showToast(msg: "Resim kaydedildi");
   }
 
   String selectedCategory = categories[1].toString();
@@ -179,23 +179,39 @@ class _PhotoAddPageState extends State<PhotoAddPage> {
   String selectedSeason = seasons[1].toString();
 
   season() {
-    return DropdownButton(
-        dropdownColor: lightColor,
-        value: selectedSeason,
-        items: seasons.map((String items) {
-          return DropdownMenuItem(
-              value: items, child: Text(items, style: TextStyle(fontSize: 20)));
-        }).toList(),
-        onChanged: (value) {
-          setState(() {
-            selectedSeason = value;
-          });
-        });
+    return Padding(
+      padding: const EdgeInsets.only(left: 15),
+      child: DropdownButton(
+          dropdownColor: lightColor,
+          value: selectedSeason,
+          items: seasons.map((String items) {
+            return DropdownMenuItem(
+                value: items,
+                child: Text(items, style: TextStyle(fontSize: 20)));
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              selectedSeason = value;
+            });
+          }),
+    );
   }
+
+  String selectedColor = colors[1].toString();
 
   color() {
     return DropdownButton(
-        dropdownColor: lightColor, items: null, onChanged: null);
+        value: selectedColor,
+        dropdownColor: lightColor,
+        items: colors.map((e) {
+          return DropdownMenuItem(
+              value: e, child: Text(e, style: TextStyle(fontSize: 20)));
+        }).toList(),
+        onChanged: (value) {
+          setState(() {
+            selectedColor = value;
+          });
+        });
   }
 
   photoProperties() {
@@ -237,7 +253,7 @@ class _PhotoAddPageState extends State<PhotoAddPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(right: 115.0),
+                      padding: const EdgeInsets.only(right: 50.0, left: 12),
                       child: Text(
                         "Renk : ",
                         style: TextStyle(fontSize: 20),

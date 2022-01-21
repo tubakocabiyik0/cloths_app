@@ -9,7 +9,7 @@ final categories = [
   'etek',
   'ayakkabı',
   'bot',
-  'çizme'
+  'çizme',
 ];
 
 final seasons = [
@@ -18,4 +18,19 @@ final seasons = [
   'mevsimlik',
 ];
 
-final colors = [];
+final colors = [
+  'siyah',
+  'beyaz',
+  'gri',
+  'kahverengi',
+  'pembe',
+  'mor',
+  'lila',
+  'mavi',
+  'lacivert',
+  'turuncu',
+  'kırmızı',
+  'sarı',
+  'yeşil',
+  'koyu yeşil',
+];

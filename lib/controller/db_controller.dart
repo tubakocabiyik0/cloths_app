@@ -1,5 +1,3 @@
-import 'package:bitirme_projesi/models/images.dart';
-import 'package:flutter/material.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -145,13 +143,13 @@ class DbConnection {
 
   bool imageSavedFuture = false;
 
-  Future<bool> saveImages(String image, String userMail) async {
+  Future<bool> saveImages(String image, String userMail, String selectedCategory,String selectedSeason,String selectedColor) async {
     try {
       await connection.open();
       await connection.transaction((connection) async {
           imageAddedResult = await connection.query(
-            'insert into images (image_url,user_mail) values(@image_url,@user_mail)',
-            substitutionValues: {'image_url': image, 'user_mail': userMail},
+            'insert into images (image_url,user_mail,category,season,color) values(@image_url,@user_mail,@category,@season,@color)',
+            substitutionValues: {'image_url': image, 'user_mail': userMail,'category':selectedCategory,'season':selectedSeason,'color':selectedColor},
             allowReuse: true,
             timeoutInSeconds: 30,
           );
