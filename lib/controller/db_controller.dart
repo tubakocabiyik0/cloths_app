@@ -1,3 +1,4 @@
+import 'package:bitirme_projesi/models/images.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,6 +21,7 @@ class DbConnection {
   PostgreSQLResult userRegisteredResult;
   PostgreSQLResult userAlreadyRegistered;
   PostgreSQLResult imageAddedResult;
+  PostgreSQLResult dataFetched;
   static String userMailAddress;
   bool _isUserLoggedIn;
 
@@ -99,8 +101,7 @@ class DbConnection {
         // check mail registered or not
         loginResult = await connection.query(
           'select mail,password,location from users where mail =@mail',
-          substitutionValues: {'mail': mail,
-            'location': location},
+          substitutionValues: {'mail': mail, 'location': location},
           allowReuse: true,
           timeoutInSeconds: 30,
         );
@@ -134,7 +135,6 @@ class DbConnection {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       _isUserLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-      print(_isUserLoggedIn);
       return _isUserLoggedIn;
     } catch (e) {
       print(e);
@@ -143,16 +143,27 @@ class DbConnection {
 
   bool imageSavedFuture = false;
 
-  Future<bool> saveImages(String image, String userMail, String selectedCategory,String selectedSeason,String selectedColor) async {
+  Future<bool> saveImages(
+      String image,
+      String userMail,
+      String selectedCategory,
+      String selectedSeason,
+      String selectedColor) async {
     try {
       await connection.open();
       await connection.transaction((connection) async {
-          imageAddedResult = await connection.query(
-            'insert into images (image_url,user_mail,category,season,color) values(@image_url,@user_mail,@category,@season,@color)',
-            substitutionValues: {'image_url': image, 'user_mail': userMail,'category':selectedCategory,'season':selectedSeason,'color':selectedColor},
-            allowReuse: true,
-            timeoutInSeconds: 30,
-          );
+        imageAddedResult = await connection.query(
+          'insert into images (image_url,user_mail,category,season,color) values(@image_url,@user_mail,@category,@season,@color)',
+          substitutionValues: {
+            'image_url': image,
+            'user_mail': userMail,
+            'category': selectedCategory,
+            'season': selectedSeason,
+            'color': selectedColor
+          },
+          allowReuse: true,
+          timeoutInSeconds: 30,
+        );
 
         //controlling image added as row
         imageSavedFuture = true;
@@ -165,29 +176,51 @@ class DbConnection {
   }
 
   Future<bool> deleteImage(String image_url) async {
-   try{
-     await connection.open();
-     await connection.transaction((connection) async {
-       imageDeleted = await connection.query(
-         'delete from images where image_url = @image_url',
-         substitutionValues: {'image_url': image_url},
-         allowReuse: true,
-         timeoutInSeconds: 30,
-       );
-     });
-     if(imageDeleted.affectedRowCount>0) {
-       return true;
-     }else{
-       return false;
-     }
-   }catch(e){
-     print("error is " + e.toString());
-   }
+    try {
+      await connection.open();
+      await connection.transaction((connection) async {
+        imageDeleted = await connection.query(
+          'delete from images where image_url = @image_url',
+          substitutionValues: {'image_url': image_url},
+          allowReuse: true,
+          timeoutInSeconds: 30,
+        );
+      });
+      if (imageDeleted.affectedRowCount > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("error is " + e.toString());
+    }
   }
-  Future<String> getLocation()async{
-    SharedPreferences sharedPreferences= await SharedPreferences.getInstance();
-    print("burası"+sharedPreferences.getString('location').toString());
-    String result =sharedPreferences.getString('location').toString();
+
+  Future<String> getLocation() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String result = sharedPreferences.getString('location').toString();
     return result;
+  }
+
+  Future<List<ImagesTable>> getCloths(String user_mail) async {
+    try {
+      await connection.open();
+      await connection.transaction((connection) async {
+        dataFetched = await connection.query(
+          'select * from images where user_mail = @user_mail',
+          substitutionValues: {'user_mail': user_mail},
+          allowReuse: true,
+          timeoutInSeconds: 30,
+        );
+      });
+      var map = dataFetched.asMap();
+      var list = List.generate(dataFetched.length, (index) {
+        return ImagesTable(map[index][0].toString(), map[index][2].toString(),
+            map[index][3].toString(), map[index][4].toString());
+      });
+      return list;
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }

@@ -1,6 +1,8 @@
+import 'package:bitirme_projesi/controller/db_controller.dart';
 import 'package:bitirme_projesi/widgets/colors.dart';
 import 'package:bitirme_projesi/widgets/listTile.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WardrobePage extends StatefulWidget {
   @override
@@ -8,8 +10,10 @@ class WardrobePage extends StatefulWidget {
 }
 
 class _WardrobePageState extends State<WardrobePage> {
+
   @override
   Widget build(BuildContext context) {
+    getUserMail();
     return Scaffold(
       backgroundColor: lightColor,
       body: SingleChildScrollView(
@@ -33,5 +37,12 @@ class _WardrobePageState extends State<WardrobePage> {
         ),
       ),
     );
+  }
+  Future<String> getUserMail() async{
+    String userMail = await SharedPreferences.getInstance().then((value) {
+      return value.getString('userMail');
+    });
+    await DbConnection().getCloths(userMail);
+    return userMail.toString();
   }
 }
