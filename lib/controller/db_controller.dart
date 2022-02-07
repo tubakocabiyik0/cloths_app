@@ -202,13 +202,13 @@ class DbConnection {
     return result;
   }
 
-  Future<List<ImagesTable>> getCloths(String user_mail) async {
+  Future<List<ImagesTable>> getCloths(String user_mail,String category) async {
     try {
       await connection.open();
       await connection.transaction((connection) async {
         dataFetched = await connection.query(
-          'select * from images where user_mail = @user_mail',
-          substitutionValues: {'user_mail': user_mail},
+          'select * from images where user_mail = @user_mail and category= @category',
+          substitutionValues: {'user_mail': user_mail,'category':category},
           allowReuse: true,
           timeoutInSeconds: 30,
         );

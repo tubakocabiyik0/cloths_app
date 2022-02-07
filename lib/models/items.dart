@@ -1,9 +1,4 @@
-final categories = [
-  'ceket',
-  'mont',
-  'tişört',
-  'kazak',
-  'hırka',
+final categories = ['ceket','mont','tişört', 'kazak', 'hırka',
   'pantalon',
   'şort',
   'etek',
@@ -34,3 +29,4 @@ final colors = [
   'yeşil',
   'koyu yeşil',
 ];
+ final List<String> listOfClothesName =['Ceket','Mont','Tişört','Kazak','Hırka','Pantalon','Şort','Etek','Ayakkabı','Bot','Çizme',];

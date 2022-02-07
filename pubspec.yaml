@@ -36,6 +36,7 @@ dependencies:
   smooth_page_indicator: ^0.2.3
   fluttertoast: ^7.1.8
   provider: ^4.3.3
+  expandable: ^4.1.4
   shared_preferences: ^0.5.12
   ff_navigation_bar: ^0.1.0
   dotted_border: ^1.0.7
