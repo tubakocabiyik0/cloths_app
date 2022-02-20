@@ -14,6 +14,7 @@ class DbConnection {
   // ignore: non_constant_identifier_names
   String image_url = '';
   String user_mail = '';
+  String user_location='';
 
   PostgreSQLConnection connection;
   PostgreSQLResult loginResult;
@@ -79,7 +80,7 @@ class DbConnection {
           await SharedPreferences.getInstance()
               .then((value) => value.setString('userMail', mail));
           await SharedPreferences.getInstance()
-              .then((value) => value.setString('location', location));
+              .then((value) => value.setString('user_location', location));
           newUserFuture = true;
           // ignore: unnecessary_statements
           (userRegisteredResult.affectedRowCount > 0 ? true : false);
@@ -94,14 +95,14 @@ class DbConnection {
   String userLoginFuture = '';
 
   Future<String> loginUser(String mail, String password) async {
-    String location;
+
     try {
       await connection.open();
       await connection.transaction((connection) async {
         // check mail registered or not
         loginResult = await connection.query(
           'select mail,password,location from users where mail =@mail',
-          substitutionValues: {'mail': mail, 'location': location},
+          substitutionValues: {'mail': mail},
           allowReuse: true,
           timeoutInSeconds: 30,
         );
@@ -115,8 +116,9 @@ class DbConnection {
                 .then((value) => value.setBool('isLoggedIn', true));
             await SharedPreferences.getInstance()
                 .then((value) => value.setString('userMail', mail));
+            print(mail);
             await SharedPreferences.getInstance()
-                .then((value) => value.setString('location', location));
+                .then((value) => value.setString('user_location', loginResult.first.elementAt(2).toString()));
           } else if (loginResult.first.elementAt(1).contains(password) ==
               false) {
             userLoginFuture = "wrong password";

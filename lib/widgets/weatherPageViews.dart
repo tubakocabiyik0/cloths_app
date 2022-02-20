@@ -1,5 +1,6 @@
 import 'package:bitirme_projesi/controller/db_controller.dart';
 import 'package:bitirme_projesi/models/weather.dart';
+import 'package:bitirme_projesi/models/weatherC.dart';
 import 'package:bitirme_projesi/service/api_service.dart';
 import 'package:bitirme_projesi/widgets/weatherCards.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,27 +23,32 @@ class _WeatherPagesWidget extends State<WeatherPageWidgets> {
   Future<WeatherResponse> fetchData;
   String location;
 
-  //DbConnection().getLocation().toString();
-  /*@override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getLocation();
+  }
 
-      fetchData = ApiService().getWeather("İstanbul");
-  }*/
   getLocation() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    setState(() {
-      location = sharedPreferences.getString('location').toString();
-    });
-    print("lo"+location);
+    if (mounted) {
+      setState(() {
+        location = sharedPreferences.getString('user_location').toString();
+      });
+    }
+    print("location" + location);
   }
 
   @override
   Widget build(BuildContext context) {
-    getLocation();
-    fetchData = ApiService().getWeather(location);
-    print(location);
+    setState(() {
+      fetchData = ApiService().getWeather(location);
+    });
+    //getLocation();
+    //print("burası"+location);
+    //fetchData = ApiService().getWeather(location);
+
     return Scaffold(
       body: buildFutureBuilder(),
     );
@@ -53,6 +59,7 @@ class _WeatherPagesWidget extends State<WeatherPageWidgets> {
       future: fetchData,
       builder: (BuildContext context, AsyncSnapshot<WeatherResponse> snapshot) {
         if (snapshot.hasData) {
+          print("data" + snapshot.data.result[widget.index].day);
           return (WeatherCards(
               snapshot.data.result[widget.index].degree,
               snapshot.data.result[widget.index].day,

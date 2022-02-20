@@ -62,6 +62,7 @@ class RegisterViewModel with ChangeNotifier {
       SharedPreferences sharedP = await SharedPreferences.getInstance();
       await sharedP.remove('isLoggedIn');
       await sharedP.remove('userMail');
+      await sharedP.remove('user_location');
       return Future.value(true);
     } finally {
       _userViewState = UsersViewState.Idle;

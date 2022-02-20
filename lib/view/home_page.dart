@@ -1,3 +1,4 @@
+import 'package:bitirme_projesi/service/api_service.dart';
 import 'package:bitirme_projesi/view/photo_add_page.dart';
 import 'package:bitirme_projesi/view/sign%C4%B1n_page.dart';
 import 'package:bitirme_projesi/view/wardrobe_page.dart';
@@ -67,6 +68,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   homePage() {
+   // ApiService().getWeather('İstanbul');
     final userViewModel = Provider.of<RegisterViewModel>(context);
     return Column(
       children: [

@@ -85,10 +85,9 @@ class _WardrobePageState extends State<WardrobePage> {
   }
   Container imageViews(File image) {
     return Container(
-     height: 200,
-     width: 200,
+    
      alignment: Alignment.center,
-      child: Image.file(image),
+      child: Image.file(image,width: 250,height: 150,),
 
     );
   }
