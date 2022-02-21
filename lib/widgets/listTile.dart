@@ -6,51 +6,29 @@ import 'package:flutter/material.dart';
 class Listtile extends StatelessWidget {
   String title;
   Function onTap;
+  Icon leading_icon;
+  Widget trailing;
 
-  Listtile(this.title);
+  Listtile({this.title, this.onTap, this.trailing, this.leading_icon});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 8.0, right: 8, left: 8),
-      child: tile(context),
-    );
+    return tile(context);
+
   }
 
   tile(BuildContext context) {
-    return Container(
-      child: MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
-        //overscroll removing
-        child: NotificationListener<OverscrollIndicatorNotification>(
-          onNotification: (overscroll) {
-            overscroll.disallowGlow();
-          },
-          child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: 11,
-              itemBuilder: (context, index) {
-                return expansionTile(index, context);
-              }),
-        ),
+    return ListTile(
+      onTap: (){
+        onTap();
+      },
+      leading: Container(
+        height: 50,
+        width: 40,
+        child: leading_icon,
       ),
-    );
-  }
-
-  ExpansionTile expansionTile(int index, BuildContext context) {
-    return ExpansionTile(
-      title: Text(listOfClothesName[index].toString()),
-      children: [
-        Container(
-          height: 400,
-          width: 400,
-          child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2), itemBuilder: (context,index){
-            return Text("s");
-          }),
-        ),
-      ],
+      title: Text(title,style: TextStyle(fontSize: 19),),
+      trailing:trailing ,
     );
   }
 }

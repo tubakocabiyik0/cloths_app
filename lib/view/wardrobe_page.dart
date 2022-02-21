@@ -46,7 +46,10 @@ class _WardrobePageState extends State<WardrobePage> {
 
   Widget expansionTile(int listIndex, BuildContext context) {
     return ExpansionTile(
-      title: Text(listOfClothesName[listIndex]),
+      title: Text(
+        listOfClothesName[listIndex],
+        style: TextStyle(fontSize: 19),
+      ),
       children: [
         FutureBuilder(
             future: getData(categories[listIndex].toString()),
@@ -73,7 +76,6 @@ class _WardrobePageState extends State<WardrobePage> {
     AsyncSnapshot<List<ImagesTable>> snapshot,
   ) {
     return GridView.builder(
-
         shrinkWrap: true,
         itemCount: snapshot.data.length,
         gridDelegate:
@@ -83,12 +85,15 @@ class _WardrobePageState extends State<WardrobePage> {
           return imageViews(image);
         });
   }
+
   Container imageViews(File image) {
     return Container(
-    
-     alignment: Alignment.center,
-      child: Image.file(image,width: 250,height: 150,),
-
+      alignment: Alignment.center,
+      child: Image.file(
+        image,
+        width: 250,
+        height: 150,
+      ),
     );
   }
 

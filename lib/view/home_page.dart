@@ -1,5 +1,6 @@
 import 'package:bitirme_projesi/service/api_service.dart';
 import 'package:bitirme_projesi/view/photo_add_page.dart';
+import 'package:bitirme_projesi/view/settings_page.dart';
 import 'package:bitirme_projesi/view/sign%C4%B1n_page.dart';
 import 'package:bitirme_projesi/view/wardrobe_page.dart';
 import 'package:bitirme_projesi/view/weatherPages.dart';
@@ -58,17 +59,19 @@ class _HomePageState extends State<HomePage> {
   homePageBody() {
     if (selectedIndex == 0) {
       return homePage();
-    }else if(selectedIndex==1){
+    } else if (selectedIndex == 1) {
       return WardrobePage();
     } else if (selectedIndex == 2) {
       return PhotoAddPage();
-    } else {
-      return null;
+    } else if (selectedIndex == 3) {
+      {
+        return SettingsPage();
+      }
     }
   }
 
   homePage() {
-   // ApiService().getWeather('İstanbul');
+    // ApiService().getWeather('İstanbul');
     final userViewModel = Provider.of<RegisterViewModel>(context);
     return Column(
       children: [

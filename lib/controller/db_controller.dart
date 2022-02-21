@@ -14,7 +14,7 @@ class DbConnection {
   // ignore: non_constant_identifier_names
   String image_url = '';
   String user_mail = '';
-  String user_location='';
+  String user_location = '';
 
   PostgreSQLConnection connection;
   PostgreSQLResult loginResult;
@@ -29,17 +29,17 @@ class DbConnection {
   DbConnection() {
     connection = (connection == null || connection.isClosed == true
         ? PostgreSQLConnection(
-            '10.0.2.2',
-            5432,
-            'flutter_db',
-            username: 'postgres',
-            password: '123456',
-            timeoutInSeconds: 30,
-            queryTimeoutInSeconds: 30,
-            timeZone: 'UTC',
-            useSSL: false,
-            isUnixSocket: false,
-          )
+      '10.0.2.2',
+      5432,
+      'flutter_db',
+      username: 'postgres',
+      password: '123456',
+      timeoutInSeconds: 30,
+      queryTimeoutInSeconds: 30,
+      timeZone: 'UTC',
+      useSSL: false,
+      isUnixSocket: false,
+    )
         : connection);
 
     //fetchDataFuture = [];
@@ -48,8 +48,8 @@ class DbConnection {
   bool newUserFuture = false;
 
   //User Register
-  Future<bool> registerUser(
-      String mail, String password, String name, String location) async {
+  Future<bool> registerUser(String mail, String password, String name,
+      String location) async {
     try {
       await connection.open();
       await connection.transaction((connection) async {
@@ -64,7 +64,7 @@ class DbConnection {
         } else {
           userRegisteredResult = await connection.query(
             'insert into users (mail,password,name,location)'
-            'values(@mail,@password,@name,@location)',
+                'values(@mail,@password,@name,@location)',
             substitutionValues: {
               'mail': mail,
               'password': password,
@@ -81,6 +81,8 @@ class DbConnection {
               .then((value) => value.setString('userMail', mail));
           await SharedPreferences.getInstance()
               .then((value) => value.setString('user_location', location));
+          await SharedPreferences.getInstance()
+              .then((value) => value.setString('user_name', name));
           newUserFuture = true;
           // ignore: unnecessary_statements
           (userRegisteredResult.affectedRowCount > 0 ? true : false);
@@ -95,13 +97,13 @@ class DbConnection {
   String userLoginFuture = '';
 
   Future<String> loginUser(String mail, String password) async {
-
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     try {
       await connection.open();
       await connection.transaction((connection) async {
         // check mail registered or not
         loginResult = await connection.query(
-          'select mail,password,location from users where mail =@mail',
+          'select mail,password,location,name from users where mail =@mail',
           substitutionValues: {'mail': mail},
           allowReuse: true,
           timeoutInSeconds: 30,
@@ -112,19 +114,20 @@ class DbConnection {
           if (loginResult.first.elementAt(1).toString() ==
               password.toString()) {
             userLoginFuture = "logged in";
-            await SharedPreferences.getInstance()
-                .then((value) => value.setBool('isLoggedIn', true));
-            await SharedPreferences.getInstance()
-                .then((value) => value.setString('userMail', mail));
+
+            sharedPreferences.setBool('isLoggedIn', true);
+            sharedPreferences.setString('userMail', mail);
             print(mail);
-            await SharedPreferences.getInstance()
-                .then((value) => value.setString('user_location', loginResult.first.elementAt(2).toString()));
-          } else if (loginResult.first.elementAt(1).contains(password) ==
-              false) {
-            userLoginFuture = "wrong password";
-          }
+            sharedPreferences.setString(
+                'user_location', loginResult.first.elementAt(2).toString());
+            sharedPreferences.setString(
+                'user_name', loginResult.first.elementAt(3).toString());
+        } else if (loginResult.first.elementAt(1).contains(password) ==
+        false) {
+        userLoginFuture = "wrong password";
+        }
         } else {
-          userLoginFuture = "this mail address can't find";
+        userLoginFuture = "this mail address can't find";
         }
       });
     } catch (e) {
@@ -145,8 +148,7 @@ class DbConnection {
 
   bool imageSavedFuture = false;
 
-  Future<bool> saveImages(
-      String image,
+  Future<bool> saveImages(String image,
       String userMail,
       String selectedCategory,
       String selectedSeason,
@@ -204,13 +206,13 @@ class DbConnection {
     return result;
   }
 
-  Future<List<ImagesTable>> getCloths(String user_mail,String category) async {
+  Future<List<ImagesTable>> getCloths(String user_mail, String category) async {
     try {
       await connection.open();
       await connection.transaction((connection) async {
         dataFetched = await connection.query(
           'select * from images where user_mail = @user_mail and category= @category',
-          substitutionValues: {'user_mail': user_mail,'category':category},
+          substitutionValues: {'user_mail': user_mail, 'category': category},
           allowReuse: true,
           timeoutInSeconds: 30,
         );
