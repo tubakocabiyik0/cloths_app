@@ -117,7 +117,6 @@ class DbConnection {
 
             sharedPreferences.setBool('isLoggedIn', true);
             sharedPreferences.setString('userMail', mail);
-            print(mail);
             sharedPreferences.setString(
                 'user_location', loginResult.first.elementAt(2).toString());
             sharedPreferences.setString(

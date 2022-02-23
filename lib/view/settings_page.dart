@@ -5,6 +5,7 @@ import 'package:bitirme_projesi/widgets/listTile.dart';
 import 'package:bitirme_projesi/widgets/textFormField.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -12,6 +13,24 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  String userMail;
+
+  // ignore: non_constant_identifier_names
+  String user_location;
+
+  // ignore: non_constant_identifier_names
+  String user_name;
+  final mailController = TextEditingController();
+  final locationController = TextEditingController();
+  final nameController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUserInfos();
+  }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -95,6 +114,13 @@ class _SettingsPageState extends State<SettingsPage> {
         Padding(
           padding: EdgeInsets.only(right: width * 0.08, left: width * 0.03),
           child: TextForm(
+            onChange: (value) {
+              setState(() {
+                user_name = value;
+              });
+            },
+            // controller: nameController,
+            initialValue: user_name != null ? user_name : "",
             obscureText: false,
           ),
         ),
@@ -104,7 +130,14 @@ class _SettingsPageState extends State<SettingsPage> {
         Padding(
           padding: EdgeInsets.only(right: width * 0.08, left: width * 0.03),
           child: TextForm(
+            onChange: (value) {
+              setState(() {
+                userMail = value;
+              });
+            },
+            initialValue: userMail != null ? userMail : "",
             obscureText: false,
+            // controller: mailController,
           ),
         ),
         SizedBox(
@@ -113,8 +146,14 @@ class _SettingsPageState extends State<SettingsPage> {
         Padding(
           padding: EdgeInsets.only(right: width * 0.08, left: width * 0.03),
           child: TextForm(
-            obscureText: false,
-          ),
+              onChange: (value) {
+                setState(() {
+                  user_location = value;
+                });
+              },
+              // controller: locationController,
+              obscureText: false,
+              initialValue: user_location != null ? user_location : ""),
         ),
         SizedBox(
           height: 30,
@@ -130,7 +169,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
   updateButton() {
     return MyButton(
-      onPressed: () {},
+      onPressed: () {
+        saveAll();
+      },
       text: "Güncelle",
     );
   }
@@ -143,4 +184,15 @@ class _SettingsPageState extends State<SettingsPage> {
       text: "Vazgeç",
     );
   }
+
+  void getUserInfos() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      userMail = sharedPreferences.getString("userMail");
+      user_location = sharedPreferences.getString("user_location");
+      user_name = sharedPreferences.getString("user_name");
+    });
+  }
+
+  void saveAll() {}
 }

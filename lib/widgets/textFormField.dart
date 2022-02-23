@@ -7,6 +7,8 @@ class TextForm extends StatelessWidget {
   final bool obscureText;
   final TextEditingController controller;
   final Function validationFunc;
+  final String initialValue;
+  final Function onChange;
 
   TextForm({
     this.labelText,
@@ -14,11 +16,15 @@ class TextForm extends StatelessWidget {
     this.controller,
     this.validationFunc,
     this.validator,
+    this.initialValue,
+    this.onChange
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onChanged: onChange,
+      initialValue: initialValue,
         decoration: InputDecoration(
           contentPadding:
               new EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
