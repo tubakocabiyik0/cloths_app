@@ -1,3 +1,4 @@
+import 'package:bitirme_projesi/config/db.dart';
 import 'package:bitirme_projesi/models/images.dart';
 import 'package:postgres/postgres.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,23 +24,24 @@ class DbConnection {
   PostgreSQLResult userAlreadyRegistered;
   PostgreSQLResult imageAddedResult;
   PostgreSQLResult dataFetched;
+  PostgreSQLResult imageUpdatedResult;
   static String userMailAddress;
   bool _isUserLoggedIn;
 
   DbConnection() {
     connection = (connection == null || connection.isClosed == true
         ? PostgreSQLConnection(
-      '10.0.2.2',
-      5432,
-      'flutter_db',
-      username: 'postgres',
-      password: '123456',
-      timeoutInSeconds: 30,
-      queryTimeoutInSeconds: 30,
-      timeZone: 'UTC',
-      useSSL: false,
-      isUnixSocket: false,
-    )
+            '10.0.2.2',
+            5432,
+            'flutter_db',
+            username: 'postgres',
+            password: '123456',
+            timeoutInSeconds: 30,
+            queryTimeoutInSeconds: 30,
+            timeZone: 'UTC',
+            useSSL: false,
+            isUnixSocket: false,
+          )
         : connection);
 
     //fetchDataFuture = [];
@@ -48,8 +50,8 @@ class DbConnection {
   bool newUserFuture = false;
 
   //User Register
-  Future<bool> registerUser(String mail, String password, String name,
-      String location) async {
+  Future<bool> registerUser(
+      String mail, String password, String name, String location) async {
     try {
       await connection.open();
       await connection.transaction((connection) async {
@@ -64,7 +66,7 @@ class DbConnection {
         } else {
           userRegisteredResult = await connection.query(
             'insert into users (mail,password,name,location)'
-                'values(@mail,@password,@name,@location)',
+            'values(@mail,@password,@name,@location)',
             substitutionValues: {
               'mail': mail,
               'password': password,
@@ -121,12 +123,12 @@ class DbConnection {
                 'user_location', loginResult.first.elementAt(2).toString());
             sharedPreferences.setString(
                 'user_name', loginResult.first.elementAt(3).toString());
-        } else if (loginResult.first.elementAt(1).contains(password) ==
-        false) {
-        userLoginFuture = "wrong password";
-        }
+          } else if (loginResult.first.elementAt(1).contains(password) ==
+              false) {
+            userLoginFuture = "wrong password";
+          }
         } else {
-        userLoginFuture = "this mail address can't find";
+          userLoginFuture = "this mail address can't find";
         }
       });
     } catch (e) {
@@ -147,7 +149,8 @@ class DbConnection {
 
   bool imageSavedFuture = false;
 
-  Future<bool> saveImages(String image,
+  Future<bool> saveImages(
+      String image,
       String userMail,
       String selectedCategory,
       String selectedSeason,
@@ -224,6 +227,52 @@ class DbConnection {
       return list;
     } catch (e) {
       print(e.toString());
+    }
+  }
+  bool updated;
+  Future<bool> updateUser(
+      {String oldMail,
+      String userName,
+      String userMail,
+      String location}) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    try {
+      await connection.open();
+      await connection.transaction((connection) async {
+        userAlreadyRegistered = await connection.query(
+            'select * from users where mail =@userMail',
+            substitutionValues: {'userMail': user_mail},
+            allowReuse: true,
+            timeoutInSeconds: 30);
+
+        if(userAlreadyRegistered.affectedRowCount>0){
+          updated =false;
+        }else{
+          imageUpdatedResult = await connection.query(
+            'update users set name = @userName, mail=@userMail, location= @location where mail= @oldMail',
+            substitutionValues: {
+              'userName':userName,
+              'userMail':userMail,
+              'location':location,
+              'oldMail':oldMail
+            },
+            allowReuse: true,
+            timeoutInSeconds: 30,
+          );
+          sharedPreferences.clear();
+          sharedPreferences.setBool('isLoggedIn', true);
+          sharedPreferences.setString('userMail', userMail);
+          sharedPreferences.setString(
+              'user_location', location);
+          sharedPreferences.setString(
+              'user_name', userName);
+          imageUpdatedResult.affectedRowCount>0 ? updated =true : updated =false;
+        }
+      });
+      return updated;
+    } catch (e) {
+      print("error is " + e.toString());
+      return false;
     }
   }
 }

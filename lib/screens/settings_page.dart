@@ -1,10 +1,13 @@
-import 'package:bitirme_projesi/view/wardrobe_page.dart';
+
+import 'package:bitirme_projesi/screens/wardrobe_page.dart';
+import 'package:bitirme_projesi/viewmodel/settings_viewmodel.dart';
 import 'package:bitirme_projesi/widgets/button.dart';
 import 'package:bitirme_projesi/widgets/colors.dart';
 import 'package:bitirme_projesi/widgets/listTile.dart';
 import 'package:bitirme_projesi/widgets/textFormField.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -14,12 +17,10 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   String userMail;
-
-  // ignore: non_constant_identifier_names
-  String user_location;
-
-  // ignore: non_constant_identifier_names
-  String user_name;
+  String userLocation;
+  String userName;
+  String oldMail;
+  bool saved;
   final mailController = TextEditingController();
   final locationController = TextEditingController();
   final nameController = TextEditingController();
@@ -116,11 +117,11 @@ class _SettingsPageState extends State<SettingsPage> {
           child: TextForm(
             onChange: (value) {
               setState(() {
-                user_name = value;
+                userName = value;
               });
             },
             // controller: nameController,
-            initialValue: user_name != null ? user_name : "",
+            initialValue: userName != null ? userName : "",
             obscureText: false,
           ),
         ),
@@ -148,12 +149,12 @@ class _SettingsPageState extends State<SettingsPage> {
           child: TextForm(
               onChange: (value) {
                 setState(() {
-                  user_location = value;
+                  userLocation = value;
                 });
               },
               // controller: locationController,
               obscureText: false,
-              initialValue: user_location != null ? user_location : ""),
+              initialValue: userLocation != null ? userLocation : ""),
         ),
         SizedBox(
           height: 30,
@@ -188,11 +189,21 @@ class _SettingsPageState extends State<SettingsPage> {
   void getUserInfos() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     setState(() {
+      oldMail=sharedPreferences.getString("userMail");
       userMail = sharedPreferences.getString("userMail");
-      user_location = sharedPreferences.getString("user_location");
-      user_name = sharedPreferences.getString("user_name");
+      userLocation = sharedPreferences.getString("user_location");
+      userName = sharedPreferences.getString("user_name");
     });
   }
 
-  void saveAll() {}
+  void saveAll() async {
+   
+   saved = await SettingsViewModel().updateUser(oldMail: oldMail,mail: userMail,name: userName,location: userLocation);
+   if(saved=true){
+     Fluttertoast.showToast(msg: "Güncellendi");
+   }else{
+     Fluttertoast.showToast(msg: "Güncelleme Yapılamadı");
+   }
+   
+  }
 }

@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:bitirme_projesi/models/items.dart';
-import 'package:bitirme_projesi/view/home_page.dart';
+import 'package:bitirme_projesi/screens/home_page.dart';
 import 'package:bitirme_projesi/viewmodel/images_viewmodel.dart';
 import 'package:bitirme_projesi/widgets/button.dart';
 import 'package:bitirme_projesi/widgets/colors.dart';

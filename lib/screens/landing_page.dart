@@ -1,4 +1,4 @@
-import 'package:bitirme_projesi/view/sign%C4%B1n_page.dart';
+import 'package:bitirme_projesi/screens/sign%C4%B1n_page.dart';
 import 'package:bitirme_projesi/viewmodel/register_viewmodel.dart';
 import 'package:bitirme_projesi/widgets/colors.dart';
 import 'package:flutter/material.dart';

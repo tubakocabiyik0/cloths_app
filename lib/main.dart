@@ -1,6 +1,6 @@
-import 'package:bitirme_projesi/view/landing_page.dart';
-import 'package:bitirme_projesi/view/signup_page.dart';
-import 'package:bitirme_projesi/view/signın_page.dart';
+import 'package:bitirme_projesi/screens/landing_page.dart';
+import 'package:bitirme_projesi/screens/signup_page.dart';
+import 'package:bitirme_projesi/screens/signın_page.dart';
 import 'package:bitirme_projesi/viewmodel/register_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

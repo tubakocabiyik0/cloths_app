@@ -1,5 +1,5 @@
-import 'package:bitirme_projesi/view/home_page.dart';
-import 'package:bitirme_projesi/view/signup_page.dart';
+
+import 'package:bitirme_projesi/screens/signup_page.dart';
 import 'package:bitirme_projesi/viewmodel/register_viewmodel.dart';
 import 'package:bitirme_projesi/widgets/colors.dart';
 import 'package:bitirme_projesi/widgets/button.dart';
@@ -7,6 +7,8 @@ import 'package:bitirme_projesi/widgets/textFormField.dart';
 import 'package:flutter/material.dart';
 import 'package:regexpattern/regexpattern.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'home_page.dart';
 
 class SignInPage extends StatefulWidget {
   @override
