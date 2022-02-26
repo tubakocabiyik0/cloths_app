@@ -1,4 +1,3 @@
-# bitirme_projesi
 
 A new Flutter application.
 
