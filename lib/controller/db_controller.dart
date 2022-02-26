@@ -31,11 +31,11 @@ class DbConnection {
   DbConnection() {
     connection = (connection == null || connection.isClosed == true
         ? PostgreSQLConnection(
-            '10.0.2.2',
-            5432,
-            'flutter_db',
-            username: 'postgres',
-            password: '123456',
+            '***
+            **,
+            '**',
+            username: '**',
+            password: '**',
             timeoutInSeconds: 30,
             queryTimeoutInSeconds: 30,
             timeZone: 'UTC',
