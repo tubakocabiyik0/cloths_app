@@ -24,6 +24,7 @@ class DbConnection {
   PostgreSQLResult userAlreadyRegistered;
   PostgreSQLResult imageAddedResult;
   PostgreSQLResult dataFetched;
+  PostgreSQLResult passwordUpdated;
   PostgreSQLResult imageUpdatedResult;
   static String userMailAddress;
   bool _isUserLoggedIn;
@@ -31,11 +32,11 @@ class DbConnection {
   DbConnection() {
     connection = (connection == null || connection.isClosed == true
         ? PostgreSQLConnection(
-            '***
-            **,
-            '**',
-            username: '**',
-            password: '**',
+      '10.0.2.2',
+       5432,
+      'flutter_db',
+            username: 'postgres',
+            password: '123456',
             timeoutInSeconds: 30,
             queryTimeoutInSeconds: 30,
             timeZone: 'UTC',
@@ -275,4 +276,29 @@ class DbConnection {
       return false;
     }
   }
+
+  Future<bool> updatePassword(
+      String password,
+      String mail,
+      ) async {
+    try {
+      await connection.open();
+      await connection.transaction((connection) async {
+        passwordUpdated = await connection.query(
+          "update users set password = @password where mail= @oldMail",
+          substitutionValues: {'password': password, 'oldMail': mail},
+          allowReuse: true,
+          timeoutInSeconds: 30,
+        );
+      });
+      if (passwordUpdated.affectedRowCount > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
 }

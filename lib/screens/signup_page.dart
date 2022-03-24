@@ -63,12 +63,9 @@ class _SignUpPAgeState extends State<SignUpPAge> {
         SizedBox(
           height: 60,
         ),
-        MyButton(
-          onPressed: () {
-            signUp();
-          },
-          text: "Sign-up",
-        ),
+        MyButton(() {
+          signUp();
+        }, "Sign-up", 220),
       ],
     );
   }

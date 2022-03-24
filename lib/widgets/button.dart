@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 class MyButton extends StatelessWidget {
   Function onPressed;
   String text;
+  double width;
 
-  MyButton({this.onPressed, this.text});
+  MyButton(this.onPressed, this.text,this.width);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 220,
+      width: width,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(24)), color: darkGreen),
       child: MaterialButton(

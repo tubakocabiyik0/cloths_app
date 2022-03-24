@@ -107,7 +107,6 @@ class _WardrobePageState extends State<WardrobePage> {
 
   Future<List<ImagesTable>> getData(String category) async {
     String userMail = await getUserMail();
-
     return await DbConnection().getCloths(userMail, category);
   }
 }

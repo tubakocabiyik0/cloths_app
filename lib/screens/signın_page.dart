@@ -80,12 +80,10 @@ class _SignInPageState extends State<SignInPage> {
         SizedBox(
           height: 60,
         ),
-        MyButton(
-          onPressed: () {
+
+          MyButton(() {
             signIn(context);
-          },
-          text: "Sign in",
-        ),
+          }, "Sign in", 220),
         TextButton(
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUpPAge()));

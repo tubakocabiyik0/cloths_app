@@ -13,4 +13,15 @@ class SettingsViewModel {
     }
     return updated;
   }
+  Future<bool> updatePassword(
+      {String oldMail,String password}) async {
+    try {
+      updated = await DbConnection().updatePassword(password,oldMail);
+    } finally  {
+
+    }
+
+    return updated;
+  }
+
 }

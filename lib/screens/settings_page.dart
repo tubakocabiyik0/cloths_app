@@ -1,6 +1,6 @@
-
 import 'package:bitirme_projesi/screens/wardrobe_page.dart';
 import 'package:bitirme_projesi/viewmodel/settings_viewmodel.dart';
+import 'package:bitirme_projesi/widgets/alertDialog.dart';
 import 'package:bitirme_projesi/widgets/button.dart';
 import 'package:bitirme_projesi/widgets/colors.dart';
 import 'package:bitirme_projesi/widgets/listTile.dart';
@@ -20,6 +20,7 @@ class _SettingsPageState extends State<SettingsPage> {
   String userLocation;
   String userName;
   String oldMail;
+  String password;
   bool saved;
   final mailController = TextEditingController();
   final locationController = TextEditingController();
@@ -64,6 +65,15 @@ class _SettingsPageState extends State<SettingsPage> {
           title: "Hesap Bilgileri",
           trailing: Icon(Icons.navigate_next),
           leading_icon: Icon(Icons.person_outline_outlined),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Listtile(
+          onTap: () => passwordAlert(width, height),
+          title: "Şifre",
+          trailing: Icon(Icons.navigate_next,),
+          leading_icon: Icon(Icons.vpn_key_outlined,),
         ),
         SizedBox(
           height: 20,
@@ -169,27 +179,21 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   updateButton() {
-    return MyButton(
-      onPressed: () {
-        saveAll();
-      },
-      text: "Güncelle",
-    );
+    return MyButton(() {
+      saveAll();
+    }, "Güncelle", 150);
   }
 
   exitButton() {
-    return MyButton(
-      onPressed: () {
-        Navigator.pop(context);
-      },
-      text: "Vazgeç",
-    );
+    return MyButton(() {
+      Navigator.pop(context);
+    }, "Vazgeç", 150);
   }
 
   void getUserInfos() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     setState(() {
-      oldMail=sharedPreferences.getString("userMail");
+      oldMail = sharedPreferences.getString("userMail");
       userMail = sharedPreferences.getString("userMail");
       userLocation = sharedPreferences.getString("user_location");
       userName = sharedPreferences.getString("user_name");
@@ -197,13 +201,58 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void saveAll() async {
-   
-   saved = await SettingsViewModel().updateUser(oldMail: oldMail,mail: userMail,name: userName,location: userLocation);
-   if(saved=true){
-     Fluttertoast.showToast(msg: "Güncellendi");
-   }else{
-     Fluttertoast.showToast(msg: "Güncelleme Yapılamadı");
-   }
-   
+    saved = await SettingsViewModel().updateUser(
+        oldMail: oldMail,
+        mail: userMail,
+        name: userName,
+        location: userLocation);
+    if (saved = true) {
+      Fluttertoast.showToast(msg: "Güncellendi");
+    } else {
+      Fluttertoast.showToast(msg: "Güncelleme Yapılamadı");
+    }
+  }
+
+  passwordAlert(double width, double height) {
+    var alert = MyAlertDialog(passwordBody(width, height));
+    showDialog(context: context, builder: (BuildContext context) => alert);
+  }
+  Widget passwordBody(double width, double height) {
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(
+              top: height * 0.08, right: width * 0.08, left: width * 0.03),
+          child: TextForm(
+            labelText: "Yeni şifrenizi yazınız",
+            obscureText: false,
+            onChange: (newValue) {
+              setState(() {
+                password = newValue.toString();
+              });
+            },
+          ),
+        ),
+        SizedBox(
+          height: 90,
+        ),
+        MyButton(() {
+          updatePassword(password, oldMail);
+        }, "Kaydet", 150),
+        SizedBox(
+          height: 15,
+        ),
+        exitButton()
+      ],
+    );
+  }
+
+  void updatePassword(String password, String oldMail) async {
+    saved = await SettingsViewModel()
+        .updatePassword(oldMail: oldMail, password: password);
+    Navigator.pop(context);
+    saved == true
+        ? Fluttertoast.showToast(msg: "Şifreniz Güncellendi")
+        : Fluttertoast.showToast(msg: "Şifre güncellemesi başarısız");
   }
 }

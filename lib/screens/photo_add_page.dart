@@ -112,28 +112,22 @@ class _PhotoAddPageState extends State<PhotoAddPage> {
   Widget saveAllButton() {
     return Padding(
       padding: EdgeInsets.only(top: 30),
-      child: MyButton(
-          onPressed: () {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => HomePage()));
-            saveImagesToDatabase();
-          },
-          text: "Kaydet"),
+      child: MyButton(() {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+        saveImagesToDatabase();
+      }, "Kaydet", 220),
     );
   }
 
   Widget exitButton() {
     return Padding(
       padding: EdgeInsets.only(top: 30),
-      child: MyButton(
-          onPressed: () {
-            setState(() {
-              currentImage = null;
-            });
-          },
-          text: "Vazgeç"),
+      child: MyButton(() {
+        setState(() {
+          currentImage = null;
+        });
+      }, "Vazgeç", 220),
     );
   }
 
@@ -215,58 +209,61 @@ class _PhotoAddPageState extends State<PhotoAddPage> {
   }
 
   photoProperties() {
-    return Dialog(
-        elevation: 5,
-        child: SingleChildScrollView(
-          child: Container(
-            color: lightColor,
-            height: 560,
-            width: 250,
-            child: Column(
-              children: [
-                Container(
-                    height: 250, width: 300, child: Image.file(currentImage)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(right: 15.0),
-                      child: Text(
-                        "Kategori : ",
+    return Padding(
+      padding: EdgeInsets.only(top:MediaQuery.of(context).size.height * 0.10),
+      child: Dialog(
+          elevation: 5,
+          child: SingleChildScrollView(
+            child: Container(
+              color: lightColor,
+              height: 560,
+              width: 250,
+              child: Column(
+                children: [
+                  Container(
+                      height: 250, width: 300, child: Image.file(currentImage)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(right: 15.0),
+                        child: Text(
+                          "Kategori : ",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      category(),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        "Mevsim : ",
                         style: TextStyle(fontSize: 20),
                       ),
-                    ),
-                    category(),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      "Mevsim : ",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    season(),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 50.0, left: 12),
-                      child: Text(
-                        "Renk : ",
-                        style: TextStyle(fontSize: 20),
+                      season(),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 50.0, left: 12),
+                        child: Text(
+                          "Renk : ",
+                          style: TextStyle(fontSize: 20),
+                        ),
                       ),
-                    ),
-                    color(),
-                  ],
-                ),
-                saveAllButton(),
-                exitButton(),
-              ],
+                      color(),
+                    ],
+                  ),
+                  saveAllButton(),
+                  exitButton(),
+                ],
+              ),
             ),
-          ),
-        ));
+          )),
+    );
   }
 }
