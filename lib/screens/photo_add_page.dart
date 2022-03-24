@@ -12,6 +12,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../viewmodel/settings_viewmodel.dart';
+import '../viewmodel/settings_viewmodel.dart';
+
 class PhotoAddPage extends StatefulWidget {
   @override
   _PhotoAddPageState createState() => _PhotoAddPageState();
@@ -146,8 +149,10 @@ class _PhotoAddPageState extends State<PhotoAddPage> {
     String userMail = await SharedPreferences.getInstance().then((value) {
       return value.getString('userMail');
     });
+    SettingsViewModel _settingsViewModel = SettingsViewModel();
+    int user_id = await _settingsViewModel.getCurrentId();
     bool saved = await ImagesViewModel()
-        .imageSave(currentImage.path.toString(), userMail,selectedCategory,selectedSeason,selectedColor);
+        .imageSave(currentImage.path.toString(),user_id,userMail,selectedCategory,selectedSeason,selectedColor);
     return saved != true
         ? Fluttertoast.showToast(msg: "Resim kaydedilmedi")
         : Fluttertoast.showToast(msg: "Resim kaydedildi");

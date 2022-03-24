@@ -10,6 +10,9 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../viewmodel/settings_viewmodel.dart';
+import '../viewmodel/settings_viewmodel.dart';
+
 class WardrobePage extends StatefulWidget {
   @override
   _WardrobePageState createState() => _WardrobePageState();
@@ -106,7 +109,9 @@ class _WardrobePageState extends State<WardrobePage> {
   }
 
   Future<List<ImagesTable>> getData(String category) async {
+    SettingsViewModel settingsViewModel = SettingsViewModel();
     String userMail = await getUserMail();
-    return await DbConnection().getCloths(userMail, category);
+    int id = await settingsViewModel.getCurrentId();
+    return await DbConnection().getImages(id, category);
   }
 }

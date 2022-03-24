@@ -72,8 +72,12 @@ class _SettingsPageState extends State<SettingsPage> {
         Listtile(
           onTap: () => passwordAlert(width, height),
           title: "Şifre",
-          trailing: Icon(Icons.navigate_next,),
-          leading_icon: Icon(Icons.vpn_key_outlined,),
+          trailing: Icon(
+            Icons.navigate_next,
+          ),
+          leading_icon: Icon(
+            Icons.vpn_key_outlined,
+          ),
         ),
         SizedBox(
           height: 20,
@@ -217,6 +221,7 @@ class _SettingsPageState extends State<SettingsPage> {
     var alert = MyAlertDialog(passwordBody(width, height));
     showDialog(context: context, builder: (BuildContext context) => alert);
   }
+
   Widget passwordBody(double width, double height) {
     return Column(
       children: [

@@ -12,10 +12,10 @@ class ImagesViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> imageSave(String image, String userMail, String selectedCategory,String selectedSeason,String selectedColor,) async {
+  Future<bool> imageSave(String image,int user_id, String userMail, String selectedCategory,String selectedSeason,String selectedColor,) async {
     try {
       _imageViewState = ImageViewState.Busy;
-       bool saved=await DbConnection().saveImages(image, userMail,selectedCategory,selectedSeason,selectedColor);
+       bool saved=await DbConnection().saveImages(image,user_id,userMail,selectedCategory,selectedSeason,selectedColor);
        if(saved =true){
          return true;
        }else{

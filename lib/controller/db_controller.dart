@@ -24,6 +24,7 @@ class DbConnection {
   PostgreSQLResult userAlreadyRegistered;
   PostgreSQLResult imageAddedResult;
   PostgreSQLResult dataFetched;
+  PostgreSQLResult getId;
   PostgreSQLResult passwordUpdated;
   PostgreSQLResult imageUpdatedResult;
   static String userMailAddress;
@@ -32,9 +33,9 @@ class DbConnection {
   DbConnection() {
     connection = (connection == null || connection.isClosed == true
         ? PostgreSQLConnection(
-      '10.0.2.2',
-       5432,
-      'flutter_db',
+            '10.0.2.2',
+            5432,
+            'flutter_db',
             username: 'postgres',
             password: '123456',
             timeoutInSeconds: 30,
@@ -91,6 +92,7 @@ class DbConnection {
           (userRegisteredResult.affectedRowCount > 0 ? true : false);
         }
       });
+      await getUserId(mail);
       return newUserFuture;
     } catch (e) {
       print("hata" + e.toString());
@@ -132,6 +134,7 @@ class DbConnection {
           userLoginFuture = "this mail address can't find";
         }
       });
+      await getUserId(mail);
     } catch (e) {
       print("error is " + e.toString());
     }
@@ -152,6 +155,7 @@ class DbConnection {
 
   Future<bool> saveImages(
       String image,
+      int user_id,
       String userMail,
       String selectedCategory,
       String selectedSeason,
@@ -160,9 +164,10 @@ class DbConnection {
       await connection.open();
       await connection.transaction((connection) async {
         imageAddedResult = await connection.query(
-          'insert into images (image_url,user_mail,category,season,color) values(@image_url,@user_mail,@category,@season,@color)',
+          'insert into images (image_url,user_id,user_mail,category,season,color) values(@image_url,@user_id,@user_mail,@category,@season,@color)',
           substitutionValues: {
             'image_url': image,
+            'user_id': user_id,
             'user_mail': userMail,
             'category': selectedCategory,
             'season': selectedSeason,
@@ -209,28 +214,31 @@ class DbConnection {
     return result;
   }
 
-  Future<List<ImagesTable>> getCloths(String user_mail, String category) async {
+  Future<List<ImagesTable>> getImages(int id, String category) async {
+    print(id);
     try {
       await connection.open();
       await connection.transaction((connection) async {
         dataFetched = await connection.query(
-          'select * from images where user_mail = @user_mail and category= @category',
-          substitutionValues: {'user_mail': user_mail, 'category': category},
+          'select * from images where user_id = $id and category= @category',
+          substitutionValues: {'category': category},
           allowReuse: true,
           timeoutInSeconds: 30,
         );
       });
       var map = dataFetched.asMap();
       var list = List.generate(dataFetched.length, (index) {
-        return ImagesTable(map[index][0].toString(), map[index][2].toString(),
-            map[index][3].toString(), map[index][4].toString());
+        return ImagesTable(map[index][0].toString(), map[index][1].toString(),
+            map[index][2].toString(), map[index][3].toString());
       });
       return list;
     } catch (e) {
       print(e.toString());
     }
   }
+
   bool updated;
+
   Future<bool> updateUser(
       {String oldMail,
       String userName,
@@ -246,16 +254,16 @@ class DbConnection {
             allowReuse: true,
             timeoutInSeconds: 30);
 
-        if(userAlreadyRegistered.affectedRowCount>0){
-          updated =false;
-        }else{
+        if (userAlreadyRegistered.affectedRowCount > 0) {
+          updated = false;
+        } else {
           imageUpdatedResult = await connection.query(
             'update users set name = @userName, mail=@userMail, location= @location where mail= @oldMail',
             substitutionValues: {
-              'userName':userName,
-              'userMail':userMail,
-              'location':location,
-              'oldMail':oldMail
+              'userName': userName,
+              'userMail': userMail,
+              'location': location,
+              'oldMail': oldMail
             },
             allowReuse: true,
             timeoutInSeconds: 30,
@@ -263,24 +271,24 @@ class DbConnection {
           sharedPreferences.clear();
           sharedPreferences.setBool('isLoggedIn', true);
           sharedPreferences.setString('userMail', userMail);
-          sharedPreferences.setString(
-              'user_location', location);
-          sharedPreferences.setString(
-              'user_name', userName);
-          imageUpdatedResult.affectedRowCount>0 ? updated =true : updated =false;
+          sharedPreferences.setString('user_location', location);
+          sharedPreferences.setString('user_name', userName);
+          imageUpdatedResult.affectedRowCount > 0
+              ? updated = true
+              : updated = false;
         }
       });
       return updated;
     } catch (e) {
-      print("error is " + e.toString());
+      print(e);
       return false;
     }
   }
 
   Future<bool> updatePassword(
-      String password,
-      String mail,
-      ) async {
+    String password,
+    String mail,
+  ) async {
     try {
       await connection.open();
       await connection.transaction((connection) async {
@@ -301,4 +309,23 @@ class DbConnection {
     }
   }
 
+  getUserId(String mail) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    try {
+      await connection.transaction((connection) async {
+        getId = await connection.query(
+          "select id from users where mail =@mail",
+          substitutionValues: {'mail': mail},
+          allowReuse: true,
+          timeoutInSeconds: 30,
+        );
+        if (getId.affectedRowCount > 0) {
+          int id = getId.first.elementAt(0);
+          sharedPreferences.setInt("user_id", id);
+        }
+      });
+    } catch (e) {
+      print("errr" + e.toString());
+    }
+  }
 }

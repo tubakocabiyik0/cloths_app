@@ -1,4 +1,5 @@
 import 'package:bitirme_projesi/controller/db_controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsViewModel {
   bool updated;
@@ -22,6 +23,11 @@ class SettingsViewModel {
     }
 
     return updated;
+  }
+
+  Future getCurrentId()async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    return await sharedPreferences.getInt("user_id");
   }
 
 }

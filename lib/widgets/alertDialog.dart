@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'colors.dart';
 import 'colors.dart';
 
-class MyAlertDialog extends StatelessWidget{
+class MyAlertDialog extends StatelessWidget {
   Widget widget;
 
   MyAlertDialog(this.widget);
@@ -20,5 +18,4 @@ class MyAlertDialog extends StatelessWidget{
       ),
     );
   }
-
 }
