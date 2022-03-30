@@ -19,7 +19,7 @@ class WardrobePage extends StatefulWidget {
 }
 
 class _WardrobePageState extends State<WardrobePage> {
-  List<ImagesTable> list;
+  List<Images> list;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class _WardrobePageState extends State<WardrobePage> {
         FutureBuilder(
             future: getData(categories[listIndex].toString()),
             builder: (BuildContext context,
-                AsyncSnapshot<List<ImagesTable>> snapshot) {
+                AsyncSnapshot<List<Images>> snapshot) {
               if (snapshot.hasData == true) {
                 if (snapshot.data.length > 0) {
                   return gridView(snapshot);
@@ -76,7 +76,7 @@ class _WardrobePageState extends State<WardrobePage> {
   }
 
   Widget gridView(
-    AsyncSnapshot<List<ImagesTable>> snapshot,
+    AsyncSnapshot<List<Images>> snapshot,
   ) {
     return GridView.builder(
         shrinkWrap: true,
@@ -108,7 +108,7 @@ class _WardrobePageState extends State<WardrobePage> {
     return userMail;
   }
 
-  Future<List<ImagesTable>> getData(String category) async {
+  Future<List<Images>> getData(String category) async {
     SettingsViewModel settingsViewModel = SettingsViewModel();
     String userMail = await getUserMail();
     int id = await settingsViewModel.getCurrentId();

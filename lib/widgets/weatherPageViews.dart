@@ -37,7 +37,6 @@ class _WeatherPagesWidget extends State<WeatherPageWidgets> {
         location = sharedPreferences.getString('user_location').toString();
       });
     }
-    print("location" + location);
   }
 
   @override
@@ -45,9 +44,6 @@ class _WeatherPagesWidget extends State<WeatherPageWidgets> {
     setState(() {
       fetchData = ApiService().getWeather(location);
     });
-    //getLocation();
-    //print("burası"+location);
-    //fetchData = ApiService().getWeather(location);
 
     return Scaffold(
       body: buildFutureBuilder(),

@@ -1,14 +1,10 @@
-class ImagesTable {
-
+class Images {
   String _image_url = "";
-  String _user_mail = "";
   String _category = "";
   String _season = "";
   String _color = "";
 
   String get image_url => _image_url;
-
-  String get user_mail => _user_mail;
 
   String get color => _color;
 
@@ -16,6 +12,5 @@ class ImagesTable {
 
   String get category => _category;
 
-  ImagesTable(this._image_url,this._category, this._season,
-      this._color);
+  Images(this._image_url, this._category, this._season, this._color);
 }

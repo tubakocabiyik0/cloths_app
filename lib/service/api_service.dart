@@ -11,7 +11,7 @@ class ApiService {
 
     //6H29tD51G9ACgtyrlDx3tV:3nFypr1ngW3QbA9Vo9cZH0
     //"api.openweathermap.org", "/data/2.5/weather", queryParameters
-    print(cityName);
+
     try {
       final response = await http.get(
           Uri.parse(

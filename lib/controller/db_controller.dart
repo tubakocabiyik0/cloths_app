@@ -24,6 +24,7 @@ class DbConnection {
   PostgreSQLResult userAlreadyRegistered;
   PostgreSQLResult imageAddedResult;
   PostgreSQLResult dataFetched;
+  PostgreSQLResult getOneImage;
   PostgreSQLResult getId;
   PostgreSQLResult passwordUpdated;
   PostgreSQLResult imageUpdatedResult;
@@ -214,7 +215,7 @@ class DbConnection {
     return result;
   }
 
-  Future<List<ImagesTable>> getImages(int id, String category) async {
+  Future<List<Images>> getImages(int id, String category) async {
     print(id);
     try {
       await connection.open();
@@ -228,7 +229,7 @@ class DbConnection {
       });
       var map = dataFetched.asMap();
       var list = List.generate(dataFetched.length, (index) {
-        return ImagesTable(map[index][0].toString(), map[index][1].toString(),
+        return Images(map[index][0].toString(), map[index][1].toString(),
             map[index][2].toString(), map[index][3].toString());
       });
       return list;
@@ -326,6 +327,35 @@ class DbConnection {
       });
     } catch (e) {
       print("errr" + e.toString());
+    }
+  }
+
+  Future<Images> getImagesForSuggest(int id, String category) async {
+    try {
+      if (connection.isClosed) {
+        await connection.open();
+        await connection.transaction((connection) async {
+          getOneImage = await connection.query(
+              "select image_url,category,season,color from images where user_id=$id and category=@category order by random() limit 1",
+              substitutionValues: {'category': category},
+              timeoutInSeconds: 30);
+        });
+      } else {
+        await connection.transaction((connection) async {
+          getOneImage = await connection.query(
+              "select image_url,category,season,color from images where user_id=$id and category=@category order by random() limit 1",
+              substitutionValues: {'category': category},
+              timeoutInSeconds: 30);
+        });
+      }
+
+      return Images(
+          getOneImage.first.elementAt(0).toString(),
+          getOneImage.first.elementAt(1).toString(),
+          getOneImage.first.elementAt(2).toString(),
+          getOneImage.first.elementAt(3).toString());
+    } catch (e) {
+      print(e.toString());
     }
   }
 }

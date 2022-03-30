@@ -68,4 +68,9 @@ class RegisterViewModel with ChangeNotifier {
       _userViewState = UsersViewState.Idle;
     }
   }
+  getLocation () async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String location = sharedPreferences.getString("user_location");
+    return location;
+  }
 }
