@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bitirme_projesi/controller/db_controller.dart';
 import 'package:bitirme_projesi/models/images.dart';
 import 'package:bitirme_projesi/service/api_service.dart';
@@ -10,6 +12,7 @@ import 'package:bitirme_projesi/viewmodel/images_viewmodel.dart';
 import 'package:bitirme_projesi/viewmodel/register_viewmodel.dart';
 import 'package:bitirme_projesi/viewmodel/settings_viewmodel.dart';
 import 'package:bitirme_projesi/widgets/bottomNavigationItems.dart';
+import 'package:bitirme_projesi/widgets/button.dart';
 import 'package:bitirme_projesi/widgets/colors.dart';
 import 'package:ff_navigation_bar/ff_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -104,7 +107,21 @@ class _HomePageState extends State<HomePage> {
           width: MediaQuery.of(context).size.width,
           child: clothes(),
         ),
-        MaterialButton(
+        SizedBox(
+          height: 20,
+        ),
+        MyButton(
+          () {
+            imagesList.clear();
+            getClothsSuggestion();
+          },
+          "Degiştir",
+          160,
+          colors: champagnePink,
+          textColor: Colors.black,
+        ),
+
+        /* MaterialButton(
             child: Text("çıkış"),
             onPressed: () async {
               bool result = await userViewModel.userLogOut();
@@ -112,63 +129,80 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => SignInPage()));
               }
-            })
+            })*/
       ],
     );
   }
 
   GridView clothes() {
     return GridView.builder(
+        itemCount: imagesList.length != 0 ? imagesList.length : 0,
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         gridDelegate:
             SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
         itemBuilder: (buildContext, index) {
-          return Image.network(
-            "https://www.halkkitabevi.com/u/halkkitabevi/img/b/r/i/rick-and-morty-391caf49221bac4a590be167868c42184a.jpg",
-          );
+          File image =
+              imagesList.length != 0 ? File(imagesList[index].image_url) : null;
+          return Image.file(image);
         });
   }
 
   getClothsSuggestion() async {
     await getDegree();
+    List<Images> createList = List<Images>();
     int id = await _settingsViewModel.getCurrentId();
     if (double.parse(degree) < 7) {
-      imagesList.add(await _imagesViewModel.getImagesForSuggest(id, "kazak"));
-      imagesList
+      createList.add(await _imagesViewModel.getImagesForSuggest(id, "kazak"));
+      createList
           .add(await _imagesViewModel.getImagesForSuggest(id, "pantalon"));
-      imagesList.add(await _imagesViewModel.getImagesForSuggest(id, "mont"));
-      imagesList.add(await _imagesViewModel.getImagesForSuggest(id, "çizme"));
+      createList.add(await _imagesViewModel.getImagesForSuggest(id, "mont"));
+      createList.add(await _imagesViewModel.getImagesForSuggest(id, "çizme"));
+      setState(() {
+        imagesList.addAll(createList);
+      });
     }
     if (double.parse(degree) > 7.01 && double.parse(degree) < 11.99) {
-      imagesList.add(await _imagesViewModel.getImagesForSuggest(id, "kazak"));
-      imagesList
+      createList.add(await _imagesViewModel.getImagesForSuggest(id, "kazak"));
+      createList
           .add(await _imagesViewModel.getImagesForSuggest(id, "pantalon"));
-      imagesList.add(await _imagesViewModel.getImagesForSuggest(id, "mont"));
-      imagesList.add(await _imagesViewModel.getImagesForSuggest(id, "bot"));
+      createList.add(await _imagesViewModel.getImagesForSuggest(id, "mont"));
+      createList.add(await _imagesViewModel.getImagesForSuggest(id, "bot"));
+      setState(() {
+        imagesList.addAll(createList);
+      });
     }
 
     if (double.parse(degree) > 12.01 && double.parse(degree) < 15.99) {
-      imagesList.add(await _imagesViewModel.getImagesForSuggest(id, "tişört"));
-      imagesList.add(await _imagesViewModel.getImagesForSuggest(id, "hırka"));
-      imagesList.add(await _imagesViewModel.getImagesForSuggest(id, "ceket"));
-      imagesList
+      createList.add(await _imagesViewModel.getImagesForSuggest(id, "tişört"));
+      createList.add(await _imagesViewModel.getImagesForSuggest(id, "hırka"));
+      createList.add(await _imagesViewModel.getImagesForSuggest(id, "ceket"));
+      createList
           .add(await _imagesViewModel.getImagesForSuggest(id, "pantalon"));
-      imagesList
+      createList
           .add(await _imagesViewModel.getImagesForSuggest(id, "ayakkabı"));
+      setState(() {
+        imagesList.addAll(createList);
+      });
     }
     if (double.parse(degree) > 16 && double.parse(degree) < 25.99) {
-      imagesList.add(await _imagesViewModel.getImagesForSuggest(id, "tişört"));
-      imagesList.add(await _imagesViewModel.getImagesForSuggest(id, "ceket"));
-      imagesList.add(await _imagesViewModel.getImagesForSuggest(id, "etek"));
-      imagesList
+      createList.add(await _imagesViewModel.getImagesForSuggest(id, "tişört"));
+      createList.add(await _imagesViewModel.getImagesForSuggest(id, "ceket"));
+      createList.add(await _imagesViewModel.getImagesForSuggest(id, "etek"));
+      createList
           .add(await _imagesViewModel.getImagesForSuggest(id, "ayakkabı"));
+      setState(() {
+        imagesList.addAll(createList);
+      });
     }
     if (double.parse(degree) > 25 && double.parse(degree) < 35) {
-      imagesList.add(await _imagesViewModel.getImagesForSuggest(id, "tişört"));
-      imagesList.add(await _imagesViewModel.getImagesForSuggest(id, "şort"));
-      imagesList
+      createList.add(await _imagesViewModel.getImagesForSuggest(id, "tişört"));
+      createList.add(await _imagesViewModel.getImagesForSuggest(id, "şort"));
+      createList
           .add(await _imagesViewModel.getImagesForSuggest(id, "ayakkabı"));
+      setState(() {
+        imagesList.addAll(createList);
+      });
     }
   }
 
