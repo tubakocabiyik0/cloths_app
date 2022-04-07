@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
     final userViewModel = Provider.of<RegisterViewModel>(context);
     return Column(
       children: [
-        //weather(),
+        weather(),
         smoothPage(),
         SizedBox(
           height: 80,
@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> {
         Container(
           height: 200,
           width: MediaQuery.of(context).size.width,
-          child: clothes(),
+          child: imagesList.isEmpty ? Container() : clothes(),
         ),
         SizedBox(
           height: 20,
@@ -120,16 +120,6 @@ class _HomePageState extends State<HomePage> {
           colors: champagnePink,
           textColor: Colors.black,
         ),
-
-        /* MaterialButton(
-            child: Text("çıkış"),
-            onPressed: () async {
-              bool result = await userViewModel.userLogOut();
-              if (result == true) {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => SignInPage()));
-              }
-            })*/
       ],
     );
   }
@@ -142,9 +132,10 @@ class _HomePageState extends State<HomePage> {
         gridDelegate:
             SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
         itemBuilder: (buildContext, index) {
-          File image =
-              imagesList.length != 0 ? File(imagesList[index].image_url) : null;
-          return Image.file(image);
+          File image = imagesList[index].image_url == null
+              ? null
+              : File(imagesList[index].image_url);
+          return image != null ? Image.file(image) : Container();
         });
   }
 
@@ -174,25 +165,47 @@ class _HomePageState extends State<HomePage> {
     }
 
     if (double.parse(degree) > 12.01 && double.parse(degree) < 15.99) {
-      createList.add(await _imagesViewModel.getImagesForSuggest(id, "tişört"));
-      createList.add(await _imagesViewModel.getImagesForSuggest(id, "hırka"));
-      createList.add(await _imagesViewModel.getImagesForSuggest(id, "ceket"));
-      createList
-          .add(await _imagesViewModel.getImagesForSuggest(id, "pantalon"));
-      createList
-          .add(await _imagesViewModel.getImagesForSuggest(id, "ayakkabı"));
+      await _imagesViewModel.getImagesForSuggest(id, "tişört") != null
+          ? createList
+              .add(await _imagesViewModel.getImagesForSuggest(id, "tişört"))
+          : null;
+      await _imagesViewModel.getImagesForSuggest(id, "hırka") != null
+          ? createList
+              .add(await _imagesViewModel.getImagesForSuggest(id, "hırka"))
+          : null;
+      await _imagesViewModel.getImagesForSuggest(id, "pantalon") != null
+          ? createList
+              .add(await _imagesViewModel.getImagesForSuggest(id, "pantalon"))
+          : null;
+      await _imagesViewModel.getImagesForSuggest(id, "ayakkabı") != null
+          ? createList
+              .add(await _imagesViewModel.getImagesForSuggest(id, "ayakkabı"))
+          : null;
       setState(() {
-        imagesList.addAll(createList);
+        print(createList);
+        createList.isEmpty ? print("n") : imagesList.addAll(createList);
       });
     }
     if (double.parse(degree) > 16 && double.parse(degree) < 25.99) {
-      createList.add(await _imagesViewModel.getImagesForSuggest(id, "tişört"));
-      createList.add(await _imagesViewModel.getImagesForSuggest(id, "ceket"));
-      createList.add(await _imagesViewModel.getImagesForSuggest(id, "etek"));
-      createList
-          .add(await _imagesViewModel.getImagesForSuggest(id, "ayakkabı"));
+      await _imagesViewModel.getImagesForSuggest(id, "tişört") != null
+          ? createList
+              .add(await _imagesViewModel.getImagesForSuggest(id, "tişört"))
+          : null;
+      await _imagesViewModel.getImagesForSuggest(id, "ceket") != null
+          ? createList
+              .add(await _imagesViewModel.getImagesForSuggest(id, "ceket"))
+          : null;
+      await _imagesViewModel.getImagesForSuggest(id, "etek") != null
+          ? createList
+              .add(await _imagesViewModel.getImagesForSuggest(id, "etek"))
+          : null;
+      await _imagesViewModel.getImagesForSuggest(id, "ayakkabı") != null
+          ? createList
+              .add(await _imagesViewModel.getImagesForSuggest(id, "ayakkabı"))
+          : null;
       setState(() {
-        imagesList.addAll(createList);
+        print(createList);
+        createList.isEmpty ? print("n") : imagesList.addAll(createList);
       });
     }
     if (double.parse(degree) > 25 && double.parse(degree) < 35) {
@@ -210,7 +223,7 @@ class _HomePageState extends State<HomePage> {
     SharedPreferences _sharedPref = await SharedPreferences.getInstance();
     location = _sharedPref.getString("user_location");
     degree = await ApiService().getWeather(location).then((value) {
-      return value.result[1].degree;
+      return value.result[0].degree;
     });
     weatherStatus = await ApiService().getWeather(location).then((value) {
       return value.result[1].status;

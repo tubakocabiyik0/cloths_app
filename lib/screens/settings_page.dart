@@ -1,4 +1,6 @@
+import 'package:bitirme_projesi/screens/sign%C4%B1n_page.dart';
 import 'package:bitirme_projesi/screens/wardrobe_page.dart';
+import 'package:bitirme_projesi/viewmodel/register_viewmodel.dart';
 import 'package:bitirme_projesi/viewmodel/settings_viewmodel.dart';
 import 'package:bitirme_projesi/widgets/alertDialog.dart';
 import 'package:bitirme_projesi/widgets/button.dart';
@@ -8,6 +10,7 @@ import 'package:bitirme_projesi/widgets/textFormField.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -35,18 +38,20 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final registerViewModel = Provider.of<RegisterViewModel>(context);
+
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: lightColor,
       body: Padding(
         padding: EdgeInsets.only(top: height * 0.15),
-        child: listTiles(width, height),
+        child: listTiles(width, height, registerViewModel),
       ),
     );
   }
 
-  listTiles(double width, double height) {
+  listTiles(double width, double height, RegisterViewModel userViewModel) {
     return Column(
       children: [
         Listtile(
@@ -86,7 +91,23 @@ class _SettingsPageState extends State<SettingsPage> {
           title: "Bilgi",
           trailing: Icon(Icons.navigate_next),
           leading_icon: Icon(Icons.bookmarks_outlined),
-        )
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Listtile(
+          onTap: () => signOut(userViewModel),
+          title: "Çıkış Yap",
+          leading_icon: Icon(Icons.logout),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Listtile(
+          onTap: () => deleteAccount(userViewModel),
+          title: "Hesabı Sil",
+          leading_icon: Icon(Icons.delete_outline),
+        ),
       ],
     );
   }
@@ -259,5 +280,20 @@ class _SettingsPageState extends State<SettingsPage> {
     saved == true
         ? Fluttertoast.showToast(msg: "Şifreniz Güncellendi")
         : Fluttertoast.showToast(msg: "Şifre güncellemesi başarısız");
+  }
+
+  signOut(RegisterViewModel registerViewModel) async {
+    bool result = await registerViewModel.userLogOut();
+    if (result == true) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => SignInPage()));
+    }
+  }
+
+  deleteAccount(RegisterViewModel registerViewModel)async {
+    int id=await SettingsViewModel().getCurrentId();
+    bool result = await registerViewModel.deleteAccount(id);
+    print(result);
+    signOut(registerViewModel);
   }
 }

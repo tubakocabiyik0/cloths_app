@@ -28,6 +28,7 @@ class DbConnection {
   PostgreSQLResult getId;
   PostgreSQLResult passwordUpdated;
   PostgreSQLResult imageUpdatedResult;
+  PostgreSQLResult accountDeleted;
   static String userMailAddress;
   bool _isUserLoggedIn;
 
@@ -326,7 +327,7 @@ class DbConnection {
         }
       });
     } catch (e) {
-      print("errr" + e.toString());
+      print(e.toString());
     }
   }
 
@@ -354,6 +355,25 @@ class DbConnection {
           getOneImage.first.elementAt(1).toString(),
           getOneImage.first.elementAt(2).toString(),
           getOneImage.first.elementAt(3).toString());
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future deleteAccoount(int user_id) async {
+    try {
+      if (connection.isClosed) {
+        await connection.open();
+        accountDeleted=await connection.transaction((connection) async {
+          await connection.query("delete from users where id=@user_id",
+              substitutionValues: {'user_id': user_id}, timeoutInSeconds: 30);
+        });
+      } else {
+        accountDeleted=await connection.transaction((connection) async {
+          await connection.query("delete from users where id in (select users.id from users inner join images on users.id=images.user_id where users.id =@user_id)",
+              substitutionValues: {'user_id': user_id}, timeoutInSeconds: 30);
+        });
+      }
     } catch (e) {
       print(e.toString());
     }

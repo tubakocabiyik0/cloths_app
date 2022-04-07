@@ -1,7 +1,8 @@
 import 'package:bitirme_projesi/controller/db_controller.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SettingsViewModel {
+class SettingsViewModel with ChangeNotifier {
   bool updated;
 
   Future<bool> updateUser(

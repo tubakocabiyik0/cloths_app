@@ -37,7 +37,6 @@ class RegisterViewModel with ChangeNotifier {
     try {
       _userViewState = UsersViewState.Busy;
       userLoginFuture = await DbConnection().loginUser(mail, password);
-      print(userLoginFuture);
       return userLoginFuture;
     } finally {
       _userViewState = UsersViewState.Idle;
@@ -68,9 +67,16 @@ class RegisterViewModel with ChangeNotifier {
       _userViewState = UsersViewState.Idle;
     }
   }
+
   getLocation () async{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String location = sharedPreferences.getString("user_location");
     return location;
   }
+
+  deleteAccount(int id)async{
+      bool result=await DbConnection().deleteAccoount(id);
+
+  }
+
 }
