@@ -41,7 +41,7 @@ class _SignUpPAgeState extends State<SignUpPAge> {
           padding: EdgeInsets.only(top: height * 0.15),
           child: Text(
             "Create Account",
-            style: TextStyle(fontFamily: "Zen", color: darkGreen, fontSize: 50),
+            style: TextStyle(fontFamily: "Zen", color: darkBlue, fontSize: 50),
           ),
         ),
         SizedBox(
@@ -125,7 +125,7 @@ class _SignUpPAgeState extends State<SignUpPAge> {
         style: TextStyle(fontFamily: "Zen", color: Colors.black, fontSize: 20),
         icon: Icon(
           Icons.arrow_drop_down_sharp,
-          color: darkGreen,
+          color: darkBlue,
         ),
         dropdownColor: lightColor,
         value: dropdownValue,

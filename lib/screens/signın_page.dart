@@ -43,7 +43,7 @@ class _SignInPageState extends State<SignInPage> {
               child: Text(
                 "Welcome",
                 style: TextStyle(
-                    fontFamily: "Zen", fontSize: 55, color: darkGreen),
+                    fontFamily: "Zen", fontSize: 55, color: darkBlue),
               ),
             ),
           ],

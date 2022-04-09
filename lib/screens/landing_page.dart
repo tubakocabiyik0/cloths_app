@@ -17,7 +17,7 @@ class LandingPage extends StatelessWidget {
       }
     } else if (provider.userViewState == UsersViewState.Busy) {
       return Center(
-        child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(darkGreen)),
+        child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(darkBlue)),
       );
     }
   }

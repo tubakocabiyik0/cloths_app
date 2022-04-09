@@ -65,12 +65,12 @@ class _WeatherPagesWidget extends State<WeatherPageWidgets> {
               width: 550,
               height: 550,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-                color: champagnePink,
+                borderRadius: BorderRadius.all(Radius.circular(9)),
+                color: pagerBackground,
               ),
               child: Center(
                 child: CircularProgressIndicator(
-                    valueColor: new AlwaysStoppedAnimation<Color>(darkGreen)),
+                    valueColor: new AlwaysStoppedAnimation<Color>(darkBlue)),
               ));
         }
       },

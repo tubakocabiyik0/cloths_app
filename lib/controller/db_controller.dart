@@ -189,17 +189,29 @@ class DbConnection {
     }
   }
 
-  Future<bool> deleteImage(String image_url) async {
+  Future<bool> deleteImage(int user_id) async {
     try {
-      await connection.open();
-      await connection.transaction((connection) async {
-        imageDeleted = await connection.query(
-          'delete from images where image_url = @image_url',
-          substitutionValues: {'image_url': image_url},
-          allowReuse: true,
-          timeoutInSeconds: 30,
-        );
-      });
+      if (connection.isClosed){
+        await connection.open();
+        await connection.transaction((connection) async {
+          imageDeleted = await connection.query(
+            'delete from images where user_id = @user_id',
+            substitutionValues: {'user_id': user_id},
+            allowReuse: true,
+            timeoutInSeconds: 30,
+          );
+        });
+      }else{
+        await connection.transaction((connection) async {
+          imageDeleted = await connection.query(
+            'delete from images where user_id = @user_id',
+            substitutionValues: {'user_id': user_id},
+            allowReuse: true,
+            timeoutInSeconds: 30,
+          );
+        });
+      }
+
       if (imageDeleted.affectedRowCount > 0) {
         return true;
       } else {
@@ -368,12 +380,14 @@ class DbConnection {
           await connection.query("delete from users where id=@user_id",
               substitutionValues: {'user_id': user_id}, timeoutInSeconds: 30);
         });
+
       } else {
         accountDeleted=await connection.transaction((connection) async {
-          await connection.query("delete from users where id in (select users.id from users inner join images on users.id=images.user_id where users.id =@user_id)",
+          await connection.query("delete from users where id=@user_id",
               substitutionValues: {'user_id': user_id}, timeoutInSeconds: 30);
         });
       }
+      deleteImage(user_id);
     } catch (e) {
       print(e.toString());
     }

@@ -104,7 +104,7 @@ class _SettingsPageState extends State<SettingsPage> {
           height: 20,
         ),
         Listtile(
-          onTap: () => deleteAccount(userViewModel),
+          onTap: () => deleteAccountDialog(userViewModel),
           title: "Hesabı Sil",
           leading_icon: Icon(Icons.delete_outline),
         ),
@@ -123,22 +123,29 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void alertDialog(double width, double height) {
-    var alert = Dialog(
-      child: Container(
+    //dialog
+    var alert = MyAlertDialog(
+      Container(
         color: lightColor,
         width: 280,
         height: 470,
-        child: column(width, height),
+        child:infoUpdateDialog(width, height),
       ),
     );
     showDialog(context: context, builder: (BuildContext context) => alert);
   }
 
-  column(double width, double height) {
+  infoUpdateDialog(double width, double height) {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(right: width * 0.27, top: height * 0.05),
+          padding:  EdgeInsets.only(left: MediaQuery.of(context).size.width*0.55),
+          child: IconButton(icon: Icon(Icons.clear_outlined), onPressed: (){
+            exit();
+          }),
+        ),
+        Padding(
+          padding: EdgeInsets.only(right: width * 0.27, top: height * 0.01),
           child: Text(
             "Bilgileri Güncelle",
             style: TextStyle(fontSize: 20),
@@ -198,21 +205,21 @@ class _SettingsPageState extends State<SettingsPage> {
         SizedBox(
           height: 30,
         ),
-        exitButton(),
       ],
     );
   }
 
   updateButton() {
-    return MyButton(() {
-      saveAll();
-    }, "Güncelle", 150);
+    return Padding(
+      padding:  EdgeInsets.only(right: MediaQuery.of(context).size.width*0.03),
+      child: MyButton(() {
+        saveAll();
+      }, "Güncelle", 260),
+    );
   }
 
-  exitButton() {
-    return MyButton(() {
-      Navigator.pop(context);
-    }, "Vazgeç", 150);
+  exit() {
+    Navigator.pop(context);
   }
 
   void getUserInfos() async {
@@ -247,6 +254,12 @@ class _SettingsPageState extends State<SettingsPage> {
     return Column(
       children: [
         Padding(
+          padding:  EdgeInsets.only(left: MediaQuery.of(context).size.width*0.55),
+          child: IconButton(icon: Icon(Icons.clear_outlined), onPressed: (){
+            exit();
+          }),
+        ),
+        Padding(
           padding: EdgeInsets.only(
               top: height * 0.08, right: width * 0.08, left: width * 0.03),
           child: TextForm(
@@ -264,11 +277,10 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         MyButton(() {
           updatePassword(password, oldMail);
-        }, "Kaydet", 150),
+        }, "Kaydet", 260),
         SizedBox(
           height: 15,
         ),
-        exitButton()
       ],
     );
   }
@@ -290,8 +302,50 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  deleteAccount(RegisterViewModel registerViewModel)async {
-    int id=await SettingsViewModel().getCurrentId();
+  deleteAccountDialog(RegisterViewModel registerViewModel) {
+    var alert = MyAlertDialog(
+      Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(
+                top: MediaQuery.of(context).size.height * 0.03,
+                left: MediaQuery.of(context).size.width * 0.02),
+            child: Text(
+                "Hesabınız kalıcı olarak silinecek. Silmek istediğinize emin misiniz?",
+                style: TextStyle(fontSize: 20)),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.04,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "Vazgeç",
+                    style: TextStyle(color: Colors.black, fontSize: 21),
+                  )),
+              TextButton(
+                  onPressed: () {
+                    deleteAccount(registerViewModel);
+                  },
+                  child: Text("Evet",
+                      style: TextStyle(color: Colors.black, fontSize: 21))),
+            ],
+          ),
+        ],
+      ),
+      width: 500,
+      height: 180,
+    );
+    showDialog(context: context, builder: (BuildContext context) => alert);
+  }
+
+  void deleteAccount(RegisterViewModel registerViewModel) async {
+    int id = await SettingsViewModel().getCurrentId();
     bool result = await registerViewModel.deleteAccount(id);
     print(result);
     signOut(registerViewModel);

@@ -44,6 +44,9 @@ dependencies:
   image_picker: ^0.6.7+22
   flutter_animated_dialog: ^1.2.0
 
+
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

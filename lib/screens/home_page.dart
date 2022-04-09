@@ -49,15 +49,16 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       backgroundColor: lightColor,
       body: homePageBody(),
       bottomNavigationBar: FFNavigationBar(
         theme: FFNavigationBarTheme(
-          itemWidth: 55,
+          itemWidth: 53,
           showSelectedItemShadow: false,
           barBackgroundColor: lightColor,
           selectedItemBorderColor: light,
-          selectedItemBackgroundColor: darkGreen,
+          selectedItemBackgroundColor: darkBlue,
           selectedItemIconColor: Colors.white,
           selectedItemLabelColor: Colors.black,
         ),
@@ -69,10 +70,10 @@ class _HomePageState extends State<HomePage> {
           });
         },
         items: [
-          BottomNavigation(MyIcons2.home_3, "Home").bottomNavigation(),
-          BottomNavigation(MyIcons2.socks, "Wardrobe").bottomNavigation(),
-          BottomNavigation(MyIcons.camera, "Add Photo").bottomNavigation(),
-          BottomNavigation(MyIcons.cog_1, "Settings").bottomNavigation(),
+          BottomNavigation(MyIcons2.home_3, "Ana Sayfa").bottomNavigation(),
+          BottomNavigation(MyIcons2.socks, "Dolap").bottomNavigation(),
+          BottomNavigation(MyIcons.camera, "Kıyafet Ekle").bottomNavigation(),
+          BottomNavigation(MyIcons.cog_1, "Ayarlar").bottomNavigation(),
         ],
       ),
     );
@@ -100,7 +101,7 @@ class _HomePageState extends State<HomePage> {
         weather(),
         smoothPage(),
         SizedBox(
-          height: 80,
+          height: 55,
         ),
         Container(
           height: 200,
@@ -110,16 +111,18 @@ class _HomePageState extends State<HomePage> {
         SizedBox(
           height: 20,
         ),
-        MyButton(
-          () {
-            imagesList.clear();
-            getClothsSuggestion();
-          },
-          "Degiştir",
-          160,
-          colors: champagnePink,
-          textColor: Colors.black,
-        ),
+        imagesList.isEmpty
+            ? Container()
+            : MyButton(
+                () {
+                  imagesList.clear();
+                  getClothsSuggestion();
+                },
+                "Değiştir",
+                260,
+                colors: buttonColor,
+                textColor: Colors.white,
+              ),
       ],
     );
   }
@@ -233,9 +236,19 @@ class _HomePageState extends State<HomePage> {
   weather() {
     return Padding(
       padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.13),
-      child: SizedBox(
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                color: Color(0xff4E576A).withOpacity(.12),
+                offset: Offset(0, 0),
+                blurRadius: 97,
+                spreadRadius: 9)
+          ],
+        ),
         height: 200,
         child: PageView(
+
           controller: _controller,
           children: [
             Padding(
@@ -269,7 +282,10 @@ class _HomePageState extends State<HomePage> {
           controller: _controller,
           count: 3,
           effect: WormEffect(
-              activeDotColor: champagnePink, dotWidth: 13, dotHeight: 13)),
+              dotColor: Colors.grey.shade300,
+              activeDotColor: darkBlue,
+              dotWidth: 13,
+              dotHeight: 13)),
     );
   }
 }

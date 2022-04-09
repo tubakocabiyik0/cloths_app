@@ -14,9 +14,11 @@ class WeatherCards extends StatelessWidget {
     return Container(
       width: 550,
       height: 550,
+
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-        color: champagnePink,
+        borderRadius: BorderRadius.all(Radius.circular(9)),
+        border: Border.all(width: 1,color:borderColor),
+        color: pagerBackground,
       ),
       child: Row(
         children: [
