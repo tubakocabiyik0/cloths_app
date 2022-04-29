@@ -70,7 +70,7 @@ class _WeatherPagesWidget extends State<WeatherPageWidgets> {
               ),
               child: Center(
                 child: CircularProgressIndicator(
-                    valueColor: new AlwaysStoppedAnimation<Color>(darkBlue)),
+                    valueColor: new AlwaysStoppedAnimation<Color>(Theme.of(context).focusColor)),
               ));
         }
       },

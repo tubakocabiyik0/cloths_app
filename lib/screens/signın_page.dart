@@ -25,7 +25,7 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: lightColor,
+      backgroundColor: Theme.of(context).backgroundColor,
       body: signUpBody(context),
     );
   }
@@ -41,9 +41,9 @@ class _SignInPageState extends State<SignInPage> {
             Padding(
               padding: EdgeInsets.only(left: width * 0.055),
               child: Text(
-                "Welcome",
+                "Hoşgeldiniz",
                 style: TextStyle(
-                    fontFamily: "Zen", fontSize: 55, color: darkBlue),
+                    fontFamily: "Zen", fontSize: 55, color: Theme.of(context).primaryColor),
               ),
             ),
           ],
@@ -72,9 +72,9 @@ class _SignInPageState extends State<SignInPage> {
                 forgetPassword();
               },
               child: Text(
-                "Forget Password ?",
+                "Şifreni mi unuttun?",
                 style: TextStyle(
-                    fontFamily: "Zen", color: Colors.black, fontSize: 17),
+                    fontFamily: "Zen", color:Theme.of(context).dividerColor, fontSize: 17),
               )),
         ),
         SizedBox(
@@ -83,15 +83,15 @@ class _SignInPageState extends State<SignInPage> {
 
           MyButton(() {
             signIn(context);
-          }, "Sign in", 220),
+          }, "Giriş Yap", 220,colors: Theme.of(context).primaryColor,textColor: Theme.of(context).cardColor,),
         TextButton(
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUpPAge()));
             },
             child: Text(
-              "Don't have an account? Sign-up",
+              "Yeni hesap oluştur",
               style: TextStyle(
-                  fontFamily: "Zen", color: Colors.black, fontSize: 17),
+                  fontFamily: "Zen", color: Theme.of(context).dividerColor, fontSize: 17),
             )),
       ],
     );
@@ -104,10 +104,10 @@ class _SignInPageState extends State<SignInPage> {
       controller: mailController,
       validator: (value) {
         if (value.isEmpty) {
-          return "can't be empty";
+          return "Burası boş olamaz";
         }
         if (!value.isEmail()) {
-          return "Please write true email";
+          return "Bu email adresi geçerli değil.";
         } else {
           return null;
         }
@@ -117,15 +117,15 @@ class _SignInPageState extends State<SignInPage> {
 
   passwordForm() {
     return TextForm(
-      labelText: "password",
+      labelText: "şifre",
       obscureText: true,
       controller: passController,
       validator: (value) {
         if (value.isEmpty) {
-          return "can't be empty";
+          return "Burası boş olamaz";
         }
         if (!value.isPasswordEasy()) {
-          return "Password can^t be less 8 character";
+          return "Şifre 8 karakterden az olamaz.";
         } else {
           return null;
         }

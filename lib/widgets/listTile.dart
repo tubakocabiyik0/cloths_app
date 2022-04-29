@@ -27,8 +27,9 @@ class Listtile extends StatelessWidget {
         width: 40,
         child: leading_icon,
       ),
-      title: Text(title,style: TextStyle(fontSize: 19),),
+      title: Text(title,style: TextStyle(fontSize: 19,color: Theme.of(context).dividerColor)),
       trailing:trailing ,
+
     );
   }
 }

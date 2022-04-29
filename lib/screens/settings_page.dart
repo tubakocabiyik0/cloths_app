@@ -1,5 +1,7 @@
 import 'package:bitirme_projesi/screens/sign%C4%B1n_page.dart';
 import 'package:bitirme_projesi/screens/wardrobe_page.dart';
+import 'package:bitirme_projesi/themes/ThemeNotifier.dart';
+import 'package:bitirme_projesi/themes/myThemes.dart';
 import 'package:bitirme_projesi/viewmodel/register_viewmodel.dart';
 import 'package:bitirme_projesi/viewmodel/settings_viewmodel.dart';
 import 'package:bitirme_projesi/widgets/alertDialog.dart';
@@ -28,48 +30,59 @@ class _SettingsPageState extends State<SettingsPage> {
   final mailController = TextEditingController();
   final locationController = TextEditingController();
   final nameController = TextEditingController();
+  bool switchedValue=false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getUserInfos();
+    getSwitchedValue().then((value) {
+      setState(() {
+        print(value.toString());
+        switchedValue= value;
+      });
+    }) ;
   }
 
   @override
   Widget build(BuildContext context) {
     final registerViewModel = Provider.of<RegisterViewModel>(context);
-
+    final themeProvider = Provider.of<ThemeNotifier>(context);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: lightColor,
+      backgroundColor: Theme.of(context).backgroundColor,
       body: Padding(
         padding: EdgeInsets.only(top: height * 0.15),
-        child: listTiles(width, height, registerViewModel),
+        child: listTiles(width, height, registerViewModel,themeProvider),
       ),
     );
   }
 
-  listTiles(double width, double height, RegisterViewModel userViewModel) {
+  listTiles(double width, double height, RegisterViewModel userViewModel, ThemeNotifier themeProvider) {
     return Column(
       children: [
         Listtile(
+          onTap:()=> null,
           title: "Gece Modu",
           trailing: CupertinoSwitch(
-            value: false,
+            onChanged:(value)=>changeTheme(value,themeProvider),
+            value: switchedValue,
             trackColor: light,
+            activeColor: buttonColor,
           ),
-          leading_icon: Icon(Icons.wb_sunny_outlined),
+          leading_icon: Icon(Icons.wb_sunny_outlined, color: Theme.of(context).cursorColor,),
         ),
         SizedBox(
           height: 20,
         ),
         Listtile(
+
           onTap: () => alertDialog(width, height),
           title: "Hesap Bilgileri",
-          trailing: Icon(Icons.navigate_next),
-          leading_icon: Icon(Icons.person_outline_outlined),
+          trailing: Icon(Icons.navigate_next, color: Theme.of(context).cursorColor,),
+          leading_icon: Icon(Icons.person_outline_outlined, color: Theme.of(context).cursorColor,),
         ),
         SizedBox(
           height: 20,
@@ -77,11 +90,14 @@ class _SettingsPageState extends State<SettingsPage> {
         Listtile(
           onTap: () => passwordAlert(width, height),
           title: "Şifre",
+
           trailing: Icon(
             Icons.navigate_next,
+            color: Theme.of(context).cursorColor,
           ),
           leading_icon: Icon(
             Icons.vpn_key_outlined,
+            color: Theme.of(context).cursorColor,
           ),
         ),
         SizedBox(
@@ -89,8 +105,8 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         Listtile(
           title: "Bilgi",
-          trailing: Icon(Icons.navigate_next),
-          leading_icon: Icon(Icons.bookmarks_outlined),
+          trailing: Icon(Icons.navigate_next,color: Theme.of(context).cursorColor,),
+          leading_icon: Icon(Icons.bookmarks_outlined, color: Theme.of(context).cursorColor,),
         ),
         SizedBox(
           height: 20,
@@ -98,7 +114,7 @@ class _SettingsPageState extends State<SettingsPage> {
         Listtile(
           onTap: () => signOut(userViewModel),
           title: "Çıkış Yap",
-          leading_icon: Icon(Icons.logout),
+          leading_icon: Icon(Icons.logout, color: Theme.of(context).cursorColor,),
         ),
         SizedBox(
           height: 20,
@@ -106,7 +122,7 @@ class _SettingsPageState extends State<SettingsPage> {
         Listtile(
           onTap: () => deleteAccountDialog(userViewModel),
           title: "Hesabı Sil",
-          leading_icon: Icon(Icons.delete_outline),
+          leading_icon: Icon(Icons.delete_outline, color: Theme.of(context).cursorColor,),
         ),
       ],
     );
@@ -350,4 +366,29 @@ class _SettingsPageState extends State<SettingsPage> {
     print(result);
     signOut(registerViewModel);
   }
+
+  changeTheme(bool value, ThemeNotifier themeProvider) {
+    setState(() {
+      switchedValue=value;
+    });
+    saveSwitchedValue(value);
+    if(value == true){
+      print("true");
+     themeProvider.setTheme(darkTheme);
+
+    }else{
+      themeProvider.setTheme(lightTheme);
+    }
+  }
+
+  void saveSwitchedValue(bool value) async{
+    SharedPreferences _sharedP = await SharedPreferences.getInstance();
+    await _sharedP.setBool("switched", value);
+  }
+  Future<bool> getSwitchedValue() async{
+    SharedPreferences _sharedP = await SharedPreferences.getInstance();
+     return _sharedP.getBool("switched");
+  }
+
+
 }

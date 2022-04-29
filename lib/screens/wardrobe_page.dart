@@ -25,7 +25,7 @@ class _WardrobePageState extends State<WardrobePage> {
   Widget build(BuildContext context) {
     //getData().then((value) => {print(value[1].user_mail.toString())});
     return Scaffold(
-      backgroundColor: lightColor,
+      backgroundColor: Theme.of(context).backgroundColor,
       body: tile(context),
     );
   }
@@ -49,15 +49,16 @@ class _WardrobePageState extends State<WardrobePage> {
 
   Widget expansionTile(int listIndex, BuildContext context) {
     return ExpansionTile(
+      trailing: Icon(Icons.keyboard_arrow_down,color: Theme.of(context).dividerColor,),
       title: Text(
         listOfClothesName[listIndex],
-        style: TextStyle(fontSize: 19),
+        style: TextStyle(fontSize: 19,color: Theme.of(context).dividerColor),
       ),
       children: [
         FutureBuilder(
             future: getData(categories[listIndex].toString()),
-            builder: (BuildContext context,
-                AsyncSnapshot<List<Images>> snapshot) {
+            builder:
+                (BuildContext context, AsyncSnapshot<List<Images>> snapshot) {
               if (snapshot.hasData == true) {
                 if (snapshot.data.length > 0) {
                   return gridView(snapshot);
@@ -85,18 +86,23 @@ class _WardrobePageState extends State<WardrobePage> {
             SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
         itemBuilder: (context, index) {
           File image = File(snapshot.data[index].image_url);
-          return imageViews(image);
+          int imageId = snapshot.data[index].id;
+          return imageViews(image, imageId);
         });
   }
 
-  Container imageViews(File image) {
-    return Container(
-      alignment: Alignment.center,
-      child: Image.file(
-        image,
-        width: 250,
-        height: 150,
-      ),
+  Widget imageViews(File image, int id) {
+    return
+      Card(
+        elevation: 1,
+        child: Container(
+            alignment: Alignment.center,
+            child: Image.file(
+              image,
+              width: 250,
+              height: 150,
+            ),
+          ),
     );
   }
 
@@ -114,4 +120,6 @@ class _WardrobePageState extends State<WardrobePage> {
     int id = await settingsViewModel.getCurrentId();
     return await DbConnection().getImages(id, category);
   }
+
+
 }

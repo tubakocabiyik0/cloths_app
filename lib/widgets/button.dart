@@ -15,7 +15,7 @@ class MyButton extends StatelessWidget {
     return Container(
       width: width,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(9)), color: colors==null? buttonColor:colors),
+          borderRadius: BorderRadius.all(Radius.circular(9)), color: colors==null? Theme.of(context).buttonColor:colors),
       child: MaterialButton(
         onPressed: onPressed,
         child: Padding(

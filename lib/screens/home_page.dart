@@ -50,17 +50,17 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      backgroundColor: lightColor,
+      backgroundColor: Theme.of(context).backgroundColor,
       body: homePageBody(),
       bottomNavigationBar: FFNavigationBar(
         theme: FFNavigationBarTheme(
           itemWidth: 53,
           showSelectedItemShadow: false,
-          barBackgroundColor: lightColor,
-          selectedItemBorderColor: light,
-          selectedItemBackgroundColor: darkBlue,
-          selectedItemIconColor: Colors.white,
-          selectedItemLabelColor: Colors.black,
+          barBackgroundColor: Theme.of(context).backgroundColor,
+          selectedItemBorderColor: Theme.of(context).accentColor,
+          selectedItemBackgroundColor: Theme.of(context).primaryColor,
+          selectedItemIconColor: Theme.of(context).cardColor,
+          selectedItemLabelColor: Theme.of(context).dividerColor,
         ),
         selectedIndex: selectedIndex,
         onSelectTab: (index) {
@@ -120,8 +120,8 @@ class _HomePageState extends State<HomePage> {
                 },
                 "Değiştir",
                 260,
-                colors: buttonColor,
-                textColor: Colors.white,
+                colors: Theme.of(context).primaryColor,
+                textColor:  Theme.of(context).cardColor,
               ),
       ],
     );
@@ -283,7 +283,7 @@ class _HomePageState extends State<HomePage> {
           count: 3,
           effect: WormEffect(
               dotColor: Colors.grey.shade300,
-              activeDotColor: darkBlue,
+              activeDotColor: Theme.of(context).hoverColor,
               dotWidth: 13,
               dotHeight: 13)),
     );

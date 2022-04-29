@@ -27,7 +27,7 @@ class _SignUpPAgeState extends State<SignUpPAge> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: lightColor,
+      backgroundColor: Theme.of(context).backgroundColor,
       body: signUpBody(),
     );
   }
@@ -40,8 +40,8 @@ class _SignUpPAgeState extends State<SignUpPAge> {
         Padding(
           padding: EdgeInsets.only(top: height * 0.15),
           child: Text(
-            "Create Account",
-            style: TextStyle(fontFamily: "Zen", color: darkBlue, fontSize: 50),
+            "Hesap Oluştur",
+            style: TextStyle(fontFamily: "Zen", color: Theme.of(context).primaryColor, fontSize: 50),
           ),
         ),
         SizedBox(
@@ -65,7 +65,7 @@ class _SignUpPAgeState extends State<SignUpPAge> {
         ),
         MyButton(() {
           signUp();
-        }, "Sign-up", 220),
+        }, "Kaydol", 220,colors: Theme.of(context).canvasColor,textColor: Theme.of(context).cardColor,),
       ],
     );
   }
@@ -76,15 +76,15 @@ class _SignUpPAgeState extends State<SignUpPAge> {
       child: Form(
         key: _nameKey,
         child: TextForm(
-          labelText: "name",
+          labelText: "isim",
           obscureText: false,
           controller: _nameController,
           validator: (v) {
             if (v.isEmpty) {
-              return "cant be empty";
+              return "Burası boş olamaz!";
             }
             if (!v.isUsername()) {
-              return "name can't be less 3 character";
+              return "isim 3 karakterden az olamaz!";
             } else {
               return null;
             }
@@ -105,10 +105,10 @@ class _SignUpPAgeState extends State<SignUpPAge> {
           controller: _mailController,
           validator: (value) {
             if (value.isEmpty) {
-              return "mail can't be empty";
+              return "Burası boş olamaz";
             }
             if (!value.isEmail()) {
-              return "please change email";
+              return "Bu email geçerli değil";
             } else {
               return null;
             }
@@ -121,23 +121,33 @@ class _SignUpPAgeState extends State<SignUpPAge> {
   Container buildDropdownButton() {
     return Container(
       width: 341,
-      child: DropdownButton(
-        style: TextStyle(fontFamily: "Zen", color: Colors.black, fontSize: 20),
-        icon: Icon(
-          Icons.arrow_drop_down_sharp,
-          color: darkBlue,
+      child: Padding(
+        padding:
+            EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.01),
+        child: DropdownButton(
+
+          style:
+              TextStyle(fontFamily: "Zen", color: Colors.black, fontSize: 20),
+          icon:Icon(
+              Icons.arrow_drop_down_sharp,
+              color: Theme.of(context).primaryColor,
+            ),
+          dropdownColor: lightColor,
+          value: dropdownValue,
+          onChanged: (String newValue) {
+            setState(() {
+              dropdownValue = newValue;
+            });
+          },
+
+          items: ['İstanbul', "İzmir", "Bursa", "Bolu", "Adana", "Ankara"]
+              .map((value) {
+            return DropdownMenuItem(value: value, child: Padding(
+              padding:  EdgeInsets.only(left:MediaQuery.of(context).size.width*0.04),
+              child: Text(value,style: TextStyle(color:Theme.of(context).splashColor,fontSize: 20),),
+            ));
+          }).toList(),
         ),
-        dropdownColor: lightColor,
-        value: dropdownValue,
-        onChanged: (String newValue) {
-          setState(() {
-            dropdownValue = newValue;
-          });
-        },
-        items: ['İstanbul', "İzmir", "Bursa", "Bolu", "Adana", "Ankara"]
-            .map((value) {
-          return DropdownMenuItem(value: value, child: Text(value));
-        }).toList(),
       ),
     );
   }
@@ -148,15 +158,15 @@ class _SignUpPAgeState extends State<SignUpPAge> {
       child: Form(
         key: _passKey,
         child: TextForm(
-          labelText: "password",
+          labelText: "şifre",
           obscureText: true,
           controller: _passwordController,
           validator: (value) {
             if (value.isEmpty) {
-              return "can't be empty";
+              return "Burası boş olamaz";
             }
             if (!value.isPasswordEasy()) {
-              return "Password can't be less 8 character";
+              return "Şifre 8 karakterden az olamaz";
             } else {
               return null;
             }
@@ -176,10 +186,9 @@ class _SignUpPAgeState extends State<SignUpPAge> {
               _nameController.text, dropdownValue)
           .then((value) {
         if (value == false) {
-
         } else if (value == true) {
-          print("basarili");
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => HomePage()));
         }
       });
     }

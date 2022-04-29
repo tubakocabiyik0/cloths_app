@@ -191,7 +191,7 @@ class DbConnection {
 
   Future<bool> deleteImage(int user_id) async {
     try {
-      if (connection.isClosed){
+      if (connection.isClosed) {
         await connection.open();
         await connection.transaction((connection) async {
           imageDeleted = await connection.query(
@@ -201,7 +201,7 @@ class DbConnection {
             timeoutInSeconds: 30,
           );
         });
-      }else{
+      } else {
         await connection.transaction((connection) async {
           imageDeleted = await connection.query(
             'delete from images where user_id = @user_id',
@@ -363,10 +363,11 @@ class DbConnection {
       }
 
       return Images(
-          getOneImage.first.elementAt(0).toString(),
-          getOneImage.first.elementAt(1).toString(),
-          getOneImage.first.elementAt(2).toString(),
-          getOneImage.first.elementAt(3).toString());
+        getOneImage.first.elementAt(0).toString(),
+        getOneImage.first.elementAt(1).toString(),
+        getOneImage.first.elementAt(2).toString(),
+        getOneImage.first.elementAt(3).toString(),
+      );
     } catch (e) {
       print(e.toString());
     }
@@ -376,13 +377,12 @@ class DbConnection {
     try {
       if (connection.isClosed) {
         await connection.open();
-        accountDeleted=await connection.transaction((connection) async {
+        accountDeleted = await connection.transaction((connection) async {
           await connection.query("delete from users where id=@user_id",
               substitutionValues: {'user_id': user_id}, timeoutInSeconds: 30);
         });
-
       } else {
-        accountDeleted=await connection.transaction((connection) async {
+        accountDeleted = await connection.transaction((connection) async {
           await connection.query("delete from users where id=@user_id",
               substitutionValues: {'user_id': user_id}, timeoutInSeconds: 30);
         });

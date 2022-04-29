@@ -27,7 +27,7 @@ class _PhotoAddPageState extends State<PhotoAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: lightColor,
+      backgroundColor: Theme.of(context).backgroundColor,
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -48,7 +48,7 @@ class _PhotoAddPageState extends State<PhotoAddPage> {
         child: DottedBorder(
           borderType: BorderType.RRect,
           radius: Radius.circular(20),
-          color: Colors.black38,
+          color: Theme.of(context).splashColor,
           padding: EdgeInsets.all(20),
           dashPattern: [10, 5],
           strokeWidth: 1,
@@ -59,7 +59,7 @@ class _PhotoAddPageState extends State<PhotoAddPage> {
                 },
                 child: Image.asset(
                   "asset/images/add.png",
-                  color: Colors.black38,
+                  color: Theme.of(context).splashColor,
                 )),
             width: 140,
             height: 140,
@@ -158,28 +158,31 @@ class _PhotoAddPageState extends State<PhotoAddPage> {
         : Fluttertoast.showToast(msg: "Resim kaydedildi");
   }
 
-  String selectedCategory = categories[1].toString();
+  String selectedCategory = categories[0].toString();
 
   category() {
-    return DropdownButton(
-        dropdownColor: lightColor,
-        value: selectedCategory,
-        items: categories.map((String items) {
-          return DropdownMenuItem(
-              value: items, child: Text(items, style: TextStyle(fontSize: 20)));
-        }).toList(),
-        onChanged: (value) {
-          setState(() {
-            selectedCategory = value;
-          });
-        });
+    return Padding(
+      padding: const EdgeInsets.only(right: 4),
+      child: DropdownButton(
+          dropdownColor: lightColor,
+          value: selectedCategory,
+          items: categories.map((String items) {
+            return DropdownMenuItem(
+                value: items, child: Text(items, style: TextStyle(fontSize: 20)));
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              selectedCategory = value;
+            });
+          }),
+    );
   }
 
   String selectedSeason = seasons[1].toString();
 
   season() {
     return Padding(
-      padding: const EdgeInsets.only(left: 15),
+      padding: const EdgeInsets.only(left: 40),
       child: DropdownButton(
           dropdownColor: lightColor,
           value: selectedSeason,
@@ -199,18 +202,21 @@ class _PhotoAddPageState extends State<PhotoAddPage> {
   String selectedColor = colors[1].toString();
 
   color() {
-    return DropdownButton(
-        value: selectedColor,
-        dropdownColor: lightColor,
-        items: colors.map((e) {
-          return DropdownMenuItem(
-              value: e, child: Text(e, style: TextStyle(fontSize: 20)));
-        }).toList(),
-        onChanged: (value) {
-          setState(() {
-            selectedColor = value;
-          });
-        });
+    return Padding(
+      padding: const EdgeInsets.only(left:15),
+      child: DropdownButton(
+          value: selectedColor,
+          dropdownColor: lightColor,
+          items: colors.map((e) {
+            return DropdownMenuItem(
+                value: e, child: Text(e, style: TextStyle(fontSize: 20)));
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              selectedColor = value;
+            });
+          }),
+    );
   }
 
   photoProperties() {
@@ -241,20 +247,22 @@ class _PhotoAddPageState extends State<PhotoAddPage> {
                     ],
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text(
-                        "Mevsim : ",
-                        style: TextStyle(fontSize: 20),
+                      Padding(
+                        padding: const EdgeInsets.only(left:23),
+                        child: Text(
+                          "Mevsim : ",
+                          style: TextStyle(fontSize: 20),
+                        ),
                       ),
                       season(),
                     ],
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(right: 50.0, left: 12),
+                        padding: const EdgeInsets.only(right: 50.0, left: 23),
                         child: Text(
                           "Renk : ",
                           style: TextStyle(fontSize: 20),
