@@ -1,7 +1,4 @@
 import 'package:bitirme_projesi/models/weather.dart';
-import 'package:bitirme_projesi/service/api_service.dart';
-import 'package:bitirme_projesi/widgets/colors.dart';
-import 'package:bitirme_projesi/widgets/weatherCards.dart';
 import 'package:bitirme_projesi/widgets/weatherPageViews.dart';
 import 'package:flutter/material.dart';
 

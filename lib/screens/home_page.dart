@@ -13,7 +13,6 @@ import 'package:bitirme_projesi/viewmodel/register_viewmodel.dart';
 import 'package:bitirme_projesi/viewmodel/settings_viewmodel.dart';
 import 'package:bitirme_projesi/widgets/bottomNavigationItems.dart';
 import 'package:bitirme_projesi/widgets/button.dart';
-import 'package:bitirme_projesi/widgets/colors.dart';
 import 'package:ff_navigation_bar/ff_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -38,12 +37,30 @@ class _HomePageState extends State<HomePage> {
   SettingsViewModel _settingsViewModel = SettingsViewModel();
   ImagesViewModel _imagesViewModel = ImagesViewModel();
   Images images;
+  //InterstitialAd _interstitialAd;
+  bool _isInterstialAdReady = false;
 
   @override
   void initState() {
     // TODO: implement initState
     getClothsSuggestion();
     super.initState();
+    /*InterstitialAd(
+        adUnitId: AdHelper().interstitialAdUnitId,
+        listener: AdListener(onAdLoaded: (ad) {
+          this._interstitialAd = ad;
+          _isInterstialAdReady = true;
+        }, onAdFailedToLoad: (ad, error) {
+          print(error.message);
+        }),
+        request: AdRequest());*/
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+   // _interstitialAd.dispose();
   }
 
   @override
@@ -94,7 +111,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   homePage() {
-    // ApiService().getWeather('İstanbul');
     final userViewModel = Provider.of<RegisterViewModel>(context);
     return Column(
       children: [
@@ -115,13 +131,14 @@ class _HomePageState extends State<HomePage> {
             ? Container()
             : MyButton(
                 () {
+                 // getAd();
                   imagesList.clear();
                   getClothsSuggestion();
                 },
                 "Değiştir",
                 260,
                 colors: Theme.of(context).primaryColor,
-                textColor:  Theme.of(context).cardColor,
+                textColor: Theme.of(context).cardColor,
               ),
       ],
     );
@@ -248,7 +265,6 @@ class _HomePageState extends State<HomePage> {
         ),
         height: 200,
         child: PageView(
-
           controller: _controller,
           children: [
             Padding(
@@ -287,5 +303,14 @@ class _HomePageState extends State<HomePage> {
               dotWidth: 13,
               dotHeight: 13)),
     );
+  }
+
+  void getAd() {
+    if (_isInterstialAdReady == true) {
+      print("ytr");
+    //  _interstitialAd.show();
+    } else {
+      print("dds");
+    }
   }
 }

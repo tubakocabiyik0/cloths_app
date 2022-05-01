@@ -1,4 +1,5 @@
-import 'package:bitirme_projesi/screens/landing_page.dart';
+import 'package:bitirme_projesi/screens/home_page.dart';
+
 import 'package:bitirme_projesi/screens/signup_page.dart';
 import 'package:bitirme_projesi/screens/signın_page.dart';
 import 'package:bitirme_projesi/themes/ThemeNotifier.dart';
@@ -6,15 +7,19 @@ import 'package:bitirme_projesi/themes/myThemes.dart';
 import 'package:bitirme_projesi/viewmodel/register_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //MobileAds.instance.initialize();
+  SharedPreferences _sharedP = await SharedPreferences.getInstance();
+  bool isLogggedIn = _sharedP.getBool("isLoggedIn");
+  print(isLogggedIn.toString()+"buradaaa");
   bool darkModeOn;
   SharedPreferences.getInstance().then((value) {
     darkModeOn = value.getBool("switched");
-    print("truemu" + darkModeOn.toString());
     runApp(MultiProvider(providers: [
       ChangeNotifierProvider<RegisterViewModel>(
           create: (context) => RegisterViewModel()),
@@ -22,11 +27,14 @@ void main() async {
         create: (context) =>
             ThemeNotifier(darkModeOn == true ?  darkTheme: lightTheme),
       )
-    ], child: MyApp()));
+    ], child: MyApp(isLogggedIn)));
   });
 }
 
 class MyApp extends StatefulWidget {
+  bool _isLoggedIn;
+  MyApp(this._isLoggedIn);
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -42,7 +50,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: themeNotifier.getTheme(),
       title: 'Authentication',
-      home: LandingPage(),
+      home: widget._isLoggedIn == true ? HomePage() : SignInPage()
     );
 
     /*ChangeNotifierProvider<RegisterViewModel>(create:(context)=>RegisterViewModel(),

@@ -3,15 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum UsersViewState { Idle, Busy }
-
+enum LoggedInState {LoggedIn,NotLoggedIn}
 class RegisterViewModel with ChangeNotifier {
   UsersViewState _userViewState = UsersViewState.Idle;
   bool userRegisterFuture = false;
   String userLoginFuture = '';
-  bool isUserLoggedIn;
+  bool _isUserLoggedIn;
 
-  RegisterViewModel() {
-    userLoggedIn();
+
+   getIsUserLoggedIn () => _isUserLoggedIn;
+
+  setIsUserLoggedIn(bool value) {
+    _isUserLoggedIn = value;
+    notifyListeners();
   }
 
   UsersViewState get userViewState => _userViewState;
@@ -29,6 +33,7 @@ class RegisterViewModel with ChangeNotifier {
           await DbConnection().registerUser(mail, password, name, location);
       return userRegisterFuture;
     } finally {
+
       _userViewState = UsersViewState.Idle;
     }
   }
@@ -43,18 +48,17 @@ class RegisterViewModel with ChangeNotifier {
     }
   }
 
-  Future<bool> userLoggedIn() async {
-    _userViewState = UsersViewState.Busy;
+ /* Future<bool> userLoggedIn() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       isUserLoggedIn = await prefs.getBool('isLoggedIn') ?? false;
+      notifyListeners();
+      print(isUserLoggedIn);
       return isUserLoggedIn;
     } catch (e) {
       print(e);
-    } finally {
-      _userViewState = UsersViewState.Idle;
     }
-  }
+  }*/
 
   Future userLogOut() async {
     try {

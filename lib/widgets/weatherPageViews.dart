@@ -65,7 +65,7 @@ class _WeatherPagesWidget extends State<WeatherPageWidgets> {
               width: 550,
               height: 550,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(9)),
+                borderRadius: BorderRadius.all(Radius.circular(3)),
                 color: pagerBackground,
               ),
               child: Center(
